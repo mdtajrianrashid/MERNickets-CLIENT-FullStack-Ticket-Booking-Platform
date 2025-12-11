@@ -1,65 +1,69 @@
-import { useQuery } from "@tanstack/react-query";
-import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import Swal from "sweetalert2";
+// src/pages/Dashboard/Vendor/RequestedBookings.jsx
+import React, { useEffect, useState } from 'react';
+import useAuth from '../../../hooks/useAuth';
+import axiosSecureInstance from '../../../api/axiosSecure';
+import Loading from '../../../components/Loading';
 
-const RequestedBookings = () => {
-    const { user } = useAuth();
-    const axiosSecure = useAxiosSecure();
+export default function RequestedBookings() {
+  const { user } = useAuth();
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const { data: requests = [], refetch } = useQuery({
-        queryKey: ['booking-requests', user?.email],
-        queryFn: async () => {
-            const res = await axiosSecure.get(`/bookings/vendor/${user.email}`);
-            return res.data;
-        }
-    });
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await axiosSecureInstance.get(`/bookings/vendor-bookings/${encodeURIComponent(user.email)}`);
+        if (mounted) setRequests(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally { if (mounted) setLoading(false); }
+    }
+    if (user?.email) load();
+    return () => (mounted = false);
+  }, [user]);
 
-    const handleStatus = (id, status) => {
-        axiosSecure.patch(`/bookings/${id}`, { status })
-            .then(res => {
-                if (res.data.modifiedCount > 0) {
-                    refetch();
-                    Swal.fire("Updated", `Booking has been ${status}`, "success");
-                }
-            });
-    };
+  const handleStatus = async (id, status) => {
+    try {
+      await axiosSecureInstance.patch(`/bookings/status/${id}`, { status });
+      setRequests(r => r.map(x => x._id === id ? { ...x, bookingStatus: status } : x));
+    } catch (err) { console.error(err); alert('Action failed'); }
+  };
 
-    return (
-        <div className="p-6">
-            <h2 className="text-3xl font-bold mb-6 text-brand-secondary">Requested Bookings</h2>
-            <div className="overflow-x-auto bg-gray-900 rounded-lg">
-                <table className="table">
-                    <thead className="text-white bg-brand-secondary/20">
-                        <tr>
-                            <th>User</th>
-                            <th>Ticket</th>
-                            <th>Qty</th>
-                            <th>Total Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {requests.map(req => (
-                            <tr key={req._id}>
-                                <td>{req.userName}<br/><span className="text-xs opacity-50">{req.userEmail}</span></td>
-                                <td>{req.ticketTitle}</td>
-                                <td>{req.quantity}</td>
-                                <td>${req.totalPrice}</td>
-                                <td className="flex gap-2">
-                                    {req.status === 'pending' ? (
-                                        <>
-                                            <button onClick={() => handleStatus(req._id, 'accepted')} className="btn btn-xs btn-success text-white">Accept</button>
-                                            <button onClick={() => handleStatus(req._id, 'rejected')} className="btn btn-xs btn-error text-white">Reject</button>
-                                        </>
-                                    ) : <span className="badge badge-ghost capitalize">{req.status}</span>}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
-};
-export default RequestedBookings;
+  if (loading) return <Loading />;
+
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Requested Bookings</h2>
+      <div className="overflow-x-auto">
+        <table className="table w-full">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Ticket</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.length === 0 && <tr><td colSpan="5">No requests</td></tr>}
+            {requests.map(r => (
+              <tr key={r._id}>
+                <td>{r.userEmail}</td>
+                <td>{r.ticketTitle}</td>
+                <td>{r.quantity}</td>
+                <td>${r.totalPrice}</td>
+                <td>
+                  <button className="btn btn-sm mr-2" onClick={() => handleStatus(r._id, 'accepted')}>Accept</button>
+                  <button className="btn btn-sm btn-ghost" onClick={() => handleStatus(r._id, 'rejected')}>Reject</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

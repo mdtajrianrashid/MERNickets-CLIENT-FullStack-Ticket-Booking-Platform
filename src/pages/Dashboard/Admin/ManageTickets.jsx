@@ -1,53 +1,55 @@
-import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import Swal from "sweetalert2";
+// src/pages/Dashboard/Admin/ManageTickets.jsx
+import React, { useEffect, useState } from 'react';
+import axiosSecureInstance from '../../../api/axiosSecure';
+import Loading from '../../../components/Loading';
 
-const ManageTickets = () => {
-    const axiosSecure = useAxiosSecure();
-    const { data: tickets = [], refetch } = useQuery({
-        queryKey: ['all-tickets-admin'],
-        queryFn: async () => {
-            const res = await axiosSecure.get('/tickets/admin/all'); // Backend endpoint fetching all tickets
-            return res.data;
-        }
-    });
+export default function ManageTickets() {
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const handleAction = (id, status) => {
-        axiosSecure.patch(`/tickets/status/${id}`, { status })
-            .then(res => {
-                if(res.data.modifiedCount > 0){
-                    refetch();
-                    Swal.fire("Success", `Ticket ${status} successfully!`, "success");
-                }
-            })
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await axiosSecureInstance.get('/tickets'); // returns approved only; adjust server if needed
+        // For manage list we need all tickets; if server doesn't provide admin-only endpoint, you may add GET /tickets/all
+        setTickets(res.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally { if (mounted) setLoading(false); }
     }
+    load();
+    return () => (mounted = false);
+  }, []);
 
-    return (
-        <div className="p-6">
-            <h2 className="text-3xl font-bold mb-6 text-brand-primary">Manage All Tickets</h2>
-            <div className="overflow-x-auto bg-gray-900 rounded-lg">
-                <table className="table">
-                    <thead><tr className="text-white"><th>Title</th><th>Vendor</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody>
-                        {tickets.map(ticket => (
-                            <tr key={ticket._id}>
-                                <td>{ticket.title}</td>
-                                <td>{ticket.vendorEmail}</td>
-                                <td><span className={`badge ${ticket.status === 'approved' ? 'badge-success' : 'badge-warning'}`}>{ticket.status}</span></td>
-                                <td>
-                                    {ticket.status === 'pending' && (
-                                        <div className="flex gap-2">
-                                            <button onClick={() => handleAction(ticket._id, 'approved')} className="btn btn-xs btn-success">Approve</button>
-                                            <button onClick={() => handleAction(ticket._id, 'rejected')} className="btn btn-xs btn-error">Reject</button>
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+  const setStatus = async (id, status) => {
+    try {
+      await axiosSecureInstance.patch(`/tickets/status/${id}`, { status });
+      setTickets(t => t.map(x => x._id === id ? { ...x, verificationStatus: status } : x));
+    } catch (err) { console.error(err); alert('Update failed'); }
+  };
+
+  if (loading) return <Loading />;
+
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Manage Tickets</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {tickets.length === 0 && <div>No tickets</div>}
+        {tickets.map(t => (
+          <div key={t._id} className="card p-4">
+            <img src={t.image} className="w-full h-40 object-cover rounded" />
+            <h3 className="font-semibold mt-2">{t.title}</h3>
+            <p>Vendor: {t.vendorEmail}</p>
+            <p>Status: {t.verificationStatus}</p>
+            <div className="mt-2 flex gap-2">
+              <button className="btn btn-sm" onClick={() => setStatus(t._id, 'approved')}>Approve</button>
+              <button className="btn btn-sm btn-ghost" onClick={() => setStatus(t._1d, 'rejected')}>Reject</button>
             </div>
-        </div>
-    );
-};
-export default ManageTickets;
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

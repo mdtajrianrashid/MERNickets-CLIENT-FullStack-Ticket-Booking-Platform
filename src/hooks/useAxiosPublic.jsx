@@ -1,11 +1,13 @@
-import axios from "axios";
+// src/hooks/useAxiosPublic.jsx
+import axios from 'axios';
+
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const axiosPublic = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+  baseURL,
+  headers: { 'Content-Type': 'application/json' }
 });
 
-const useAxiosPublic = () => {
-    return axiosPublic;
-};
-
-export default useAxiosPublic;
+export default function useAxiosPublic() {
+  return axiosPublic;
+}

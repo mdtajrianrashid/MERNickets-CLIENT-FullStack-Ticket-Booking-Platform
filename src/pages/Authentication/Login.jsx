@@ -1,65 +1,51 @@
-import { useForm } from "react-hook-form";
-import useAuth from "../../hooks/useAuth";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { FaGoogle } from "react-icons/fa";
+import React, { useState } from 'react';
+import useAuth from '../../hooks/useAuth';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
-const Login = () => {
-    const { signIn, googleSignIn } = useAuth();
-    const { register, handleSubmit } = useForm();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+export default function Login() {
+  const { login, googleLogin } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/';
 
-    const onSubmit = data => {
-        signIn(data.email, data.password)
-            .then(result => {
-                Swal.fire("Logged In", "Welcome back!", "success");
-                navigate(from, { replace: true });
-            })
-            .catch(error => Swal.fire("Error", error.message, "error"));
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, password);
+      toast.success('Login success');
+      navigate(from, { replace: true });
+    } catch (err) {
+  const msg = err?.message || err?.response?.data?.message || 'Login failed';
+  toast.error(msg);
+}
+  };
 
-    const handleGoogle = () => {
-        googleSignIn()
-            .then(result => {
-                // Ideally post user to DB here to sync google users
-                navigate(from, { replace: true });
-            })
-            .catch(error => Swal.fire("Error", error.message, "error"));
-    }
+  const handleGoogle = async () => {
+    try {
+      await googleLogin();
+      toast.success('Signed in with Google');
+      navigate(from, { replace: true });
+    } catch (err) {
+  const msg = err?.message || err?.response?.data?.message || 'Google login failed';
+  toast.error(msg);
+}
+  };
 
-    return (
-        <div className="hero min-h-screen bg-brand-dark">
-            <div className="hero-content flex-col lg:flex-row-reverse">
-                <div className="text-center lg:text-left text-white max-w-md">
-                    <h1 className="text-5xl font-bold text-brand-primary">Login Now!</h1>
-                    <p className="py-6">Access your dashboard and manage your tickets.</p>
-                </div>
-                <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-gray-900 border border-brand-primary/20">
-                    <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-                        <div className="form-control">
-                            <label className="label"><span className="label-text text-white">Email</span></label>
-                            <input type="email" {...register("email")} placeholder="email" className="input input-bordered bg-gray-800 text-white" required />
-                        </div>
-                        <div className="form-control">
-                            <label className="label"><span className="label-text text-white">Password</span></label>
-                            <input type="password" {...register("password")} placeholder="password" className="input input-bordered bg-gray-800 text-white" required />
-                        </div>
-                        <div className="form-control mt-6">
-                            <button className="btn bg-brand-primary text-black hover:bg-brand-accent">Login</button>
-                        </div>
-                        <div className="divider text-gray-500">OR</div>
-                        <button type="button" onClick={handleGoogle} className="btn btn-outline border-brand-secondary text-brand-secondary hover:bg-brand-secondary hover:text-white">
-                            <FaGoogle className="mr-2" /> Login with Google
-                        </button>
-                        <p className="mt-4 text-center text-sm text-gray-400">
-                            New here? <Link to="/register" className="text-brand-primary hover:underline">Register</Link>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
-    );
-};
-export default Login;
+  return (
+    <div className="max-w-md mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">Login</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="email" required placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="input w-full" />
+        <input type="password" required placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} className="input w-full" />
+        <button className="btn w-full">Login</button>
+      </form>
+      <div className="mt-4 flex gap-2">
+        <button onClick={handleGoogle} className="btn btn-outline w-full">Sign in with Google</button>
+      </div>
+      <p className="mt-4 text-sm">Don't have an account? <Link to="/register" className="text-teal-600">Register</Link></p>
+    </div>
+  );
+}

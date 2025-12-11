@@ -1,55 +1,57 @@
-import Banner from "./Banner";
-import useAxiosPublic from "../../hooks/useAxiosPublic"; // Create this similarly to Secure but without interceptors
-import { useQuery } from "@tanstack/react-query";
-import TicketCard from "../../components/TicketCard";
-import Loading from "../../components/Loading";
+// src/pages/Home/Home.jsx
+import React, { useEffect, useState } from 'react';
+import Banner from './Banner';
+import TicketCard from '../../components/TicketCard';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import Loading from '../../components/Loading';
 
-const Home = () => {
-    const axiosPublic = useAxiosPublic();
+export default function Home() {
+  const api = useAxiosPublic();
+  const [advertised, setAdvertised] = useState([]);
+  const [latest, setLatest] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    // Fetch Advertised Tickets (Req: 7d)
-    const { data: advertisedTickets = [], isLoading: loadingAds } = useQuery({
-        queryKey: ['advertisedTickets'],
-        queryFn: async () => {
-            const res = await axiosPublic.get('/tickets/advertised');
-            return res.data;
-        }
-    });
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      try {
+        const [advRes, latestRes] = await Promise.all([
+          api.get('/tickets/advertised'),
+          api.get('/tickets', { params: { page: 1, limit: 8 } })
+        ]);
+        if (!mounted) return;
+        setAdvertised(Array.isArray(advRes.data) ? advRes.data : advRes.data.items || []);
+        // tickets endpoint returns { items, total,... } — support both shapes
+        setLatest(latestRes.data.items || latestRes.data || []);
+      } catch (err) {
+        console.error('Home load error', err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    load();
+    return () => (mounted = false);
+  }, []);
 
-    // Fetch Latest Tickets (Req: 2c)
-    const { data: latestTickets = [], isLoading: loadingLatest } = useQuery({
-        queryKey: ['latestTickets'],
-        queryFn: async () => {
-            const res = await axiosPublic.get('/tickets/latest');
-            return res.data;
-        }
-    });
+  if (loading) return <Loading />;
 
-    if (loadingAds || loadingLatest) return <Loading />;
-
-    return (
-        <div className="space-y-12">
-            <Banner />
-            
-            {/* Advertisements Section [cite: 78] */}
-            {advertisedTickets.length > 0 && (
-                <section className="my-10 px-4 max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-8 text-brand-primary drop-shadow-[0_0_10px_rgba(0,242,255,0.5)]">Featured Journeys</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {advertisedTickets.map(ticket => <TicketCard key={ticket._id} ticket={ticket} />)}
-                    </div>
-                </section>
-            )}
-
-            {/* Latest Tickets Section [cite: 87] */}
-            <section className="my-10 px-4 max-w-7xl mx-auto">
-                 <h2 className="text-3xl font-bold text-center mb-8">Latest Tickets</h2>
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {latestTickets.map(ticket => <TicketCard key={ticket._id} ticket={ticket} />)}
-                 </div>
-            </section>
+  return (
+    <div className="space-y-8">
+      <Banner />
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Advertisement</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {advertised.length ? advertised.map(t => <TicketCard key={t._id} ticket={t} />) : <div>No advertised tickets</div>}
         </div>
-    );
-};
+      </section>
 
-export default Home;
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Latest Tickets</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {latest.length ? latest.map(t => <TicketCard key={t._id} ticket={t} />) : <div>No tickets</div>}
+        </div>
+      </section>
+    </div>
+  );
+}

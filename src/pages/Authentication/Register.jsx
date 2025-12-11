@@ -1,76 +1,54 @@
-import { useForm } from "react-hook-form";
-import useAuth from "../../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
-import useAxiosPublic from "../../hooks/useAxiosPublic";
-import Swal from "sweetalert2";
+import React, { useState } from 'react';
+import useAuth from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
-const Register = () => {
-    const { createUser, updateUserProfile } = useAuth();
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const navigate = useNavigate();
-    const axiosPublic = useAxiosPublic();
+function validatePassword(pw) {
+  const hasUpper = /[A-Z]/.test(pw);
+  const hasLower = /[a-z]/.test(pw);
+  const longEnough = pw.length >= 6;
+  return hasUpper && hasLower && longEnough;
+}
 
-    const onSubmit = data => {
-        createUser(data.email, data.password)
-            .then(result => {
-                updateUserProfile(data.name, data.photoURL)
-                    .then(() => {
-                        // Create user entry in DB
-                        const userInfo = { name: data.name, email: data.email, role: 'user' };
-                        axiosPublic.post('/users', userInfo)
-                            .then(res => {
-                                if (res.data.insertedId) {
-                                    Swal.fire("Success", "Account Created!", "success");
-                                    navigate('/');
-                                }
-                            });
-                    });
-            })
-            .catch(error => Swal.fire("Error", error.message, "error"));
-    };
+export default function Register() {
+  const { register } = useAuth();
+  const [name, setName] = useState('');
+  const [photo, setPhoto] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
 
-    return (
-        <div className="hero min-h-screen bg-brand-dark">
-            <div className="hero-content flex-col">
-                <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-gray-900 border border-brand-primary/20">
-                    <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-                        <h1 className="text-3xl font-bold text-center text-brand-secondary mb-4">Register</h1>
-                        
-                        <div className="form-control">
-                            <label className="label">Name</label>
-                            <input {...register("name", { required: true })} className="input input-bordered bg-gray-800" />
-                        </div>
-                        <div className="form-control">
-                            <label className="label">Photo URL</label>
-                            <input {...register("photoURL", { required: true })} className="input input-bordered bg-gray-800" />
-                        </div>
-                        <div className="form-control">
-                            <label className="label">Email</label>
-                            <input type="email" {...register("email", { required: true })} className="input input-bordered bg-gray-800" />
-                        </div>
-                        <div className="form-control">
-                            <label className="label">Password</label>
-                            <input type="password" 
-                                {...register("password", { 
-                                    required: true, 
-                                    minLength: 6, 
-                                    pattern: /(?=.*[A-Z])(?=.*[a-z])/ 
-                                })} 
-                                className="input input-bordered bg-gray-800" />
-                            {errors.password?.type === 'minLength' && <span className="text-red-500 text-xs mt-1">Min 6 characters required</span>}
-                            {errors.password?.type === 'pattern' && <span className="text-red-500 text-xs mt-1">Must have uppercase & lowercase</span>}
-                        </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validatePassword(password)) {
+      return toast.error('Password must have upper, lower and at least 6 chars');
+    }
+    setSubmitting(true);
+    try {
+      await register({ name, email, photoURL: photo, password });
+      toast.success('Registered');
+      navigate('/');
+    } catch (err) {
+      // Prefer server friendly message
+      const msg = err?.response?.data?.message || err?.message || 'Register failed';
+      toast.error(msg);
+      console.error("Register form error:", err?.response || err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-                        <div className="form-control mt-6">
-                            <button className="btn bg-brand-secondary text-white">Register</button>
-                        </div>
-                        <p className="mt-4 text-center text-sm">
-                            Already have an account? <Link to="/login" className="text-brand-secondary">Login</Link>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
-    );
-};
-export default Register;
+  return (
+    <div className="max-w-md mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">Register</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Name" className="input w-full" required />
+        <input value={photo} onChange={e=>setPhoto(e.target.value)} placeholder="Photo URL" className="input w-full" />
+        <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" className="input w-full" required />
+        <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" className="input w-full" required />
+        <button className="btn w-full" disabled={submitting}>{submitting ? 'Registering...' : 'Register'}</button>
+      </form>
+    </div>
+  );
+}

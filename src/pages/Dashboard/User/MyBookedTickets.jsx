@@ -1,67 +1,60 @@
-import { useQuery } from "@tanstack/react-query";
-import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { Link } from "react-router-dom";
-import Loading from "../../../components/Loading";
+// src/pages/Dashboard/User/MyBookedTickets.jsx
+import React, { useEffect, useState } from 'react';
+import useAuth from '../../../hooks/useAuth';
+import axiosSecureInstance from '../../../api/axiosSecure';
+import Loading from '../../../components/Loading';
+import Checkout from '../../Shared/Checkout';
 
-const MyBookedTickets = () => {
-    const { user } = useAuth();
-    const axiosSecure = useAxiosSecure();
+export default function MyBookedTickets() {
+  const { user } = useAuth();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
-    const { data: bookings = [], isLoading } = useQuery({
-        queryKey: ['bookings', user?.email],
-        queryFn: async () => {
-            const res = await axiosSecure.get(`/bookings?email=${user.email}`);
-            return res.data;
-        }
-    });
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await axiosSecureInstance.get(`/bookings/my-bookings/${encodeURIComponent(user.email)}`);
+        if (mounted) setBookings(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally { if (mounted) setLoading(false); }
+    }
+    if (user?.email) load();
+    return () => (mounted = false);
+  }, [user]);
 
-    if (isLoading) return <Loading />;
+  if (loading) return <Loading />;
 
-    return (
-        <div className="p-4">
-            <h2 className="text-3xl font-bold mb-8 text-brand-primary">My Booked Tickets</h2>
-            {/* 3 Column Grid [cite: 128] */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {bookings.map(booking => (
-                    <div key={booking._id} className="card bg-gray-900 border border-brand-primary/20 shadow-xl">
-                        <figure className="h-48 overflow-hidden">
-                            <img src={booking.image} alt="ticket" className="object-cover w-full h-full" />
-                        </figure>
-                        <div className="card-body">
-                            <h2 className="card-title text-white">{booking.ticketTitle}</h2>
-                            <p className="text-sm text-gray-400">{booking.from} ➝ {booking.to}</p>
-                            
-                            <div className="my-2">
-                                <p>Quantity: <span className="font-bold text-brand-accent">{booking.quantity}</span></p>
-                                <p>Total: <span className="font-bold text-brand-accent">${booking.totalPrice}</span></p>
-                                <p>Date: {new Date(booking.departureDate).toLocaleString()}</p>
-                            </div>
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">My Booked Tickets</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {bookings.length === 0 && <div>No bookings</div>}
+        {bookings.map(b => (
+          <div key={b._id} className="card p-4 bg-white dark:bg-gray-800 shadow">
+            <img src={b.ticketImage} alt={b.ticketTitle} className="w-full h-36 object-cover rounded" />
+            <h3 className="font-semibold mt-2">{b.ticketTitle}</h3>
+            <p>{b.from} → {b.to}</p>
+            <p>Qty: {b.quantity}</p>
+            <p>Total: ${b.totalPrice}</p>
+            <p>Status: <strong>{b.bookingStatus}</strong></p>
+            {b.bookingStatus === 'accepted' && (
+              <button className="btn btn-sm mt-2" onClick={() => setSelectedBooking(b)}>Pay Now</button>
+            )}
+            {b.bookingStatus === 'pending' && <div className="text-sm mt-2 text-gray-500">Waiting for vendor</div>}
+          </div>
+        ))}
+      </div>
 
-                            {/* Status Logic [cite: 135] */}
-                            <div className="badge badge-outline mb-4">
-                                Status: <span className={`font-bold ml-2 ${
-                                    booking.status === 'pending' ? 'text-yellow-400' :
-                                    booking.status === 'accepted' ? 'text-green-400' :
-                                    booking.status === 'paid' ? 'text-blue-400' : 'text-red-400'
-                                }`}>{booking.status}</span>
-                            </div>
-
-                            <div className="card-actions justify-end">
-                                {/* Pay Button Logic [cite: 137] */}
-                                {booking.status === 'accepted' && (
-                                    <Link to={`/dashboard/payment/${booking._id}`} className="btn btn-sm bg-brand-primary text-black w-full animate-pulse">
-                                        Pay Now
-                                    </Link>
-                                )}
-                                {booking.status === 'pending' && <button disabled className="btn btn-sm btn-disabled w-full">Waiting for Approval</button>}
-                                {booking.status === 'rejected' && <button disabled className="btn btn-sm btn-error w-full">Cancelled</button>}
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+      {selectedBooking && (
+        <div className="mt-6">
+          <h3 className="text-xl mb-3">Pay for {selectedBooking.ticketTitle}</h3>
+          <Checkout booking={selectedBooking} />
         </div>
-    );
-};
-export default MyBookedTickets;
+      )}
+    </div>
+  );
+}

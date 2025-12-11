@@ -1,26 +1,15 @@
-import { useEffect, useState } from "react";
-import { FaMoon, FaSun } from "react-icons/fa";
+import React from 'react';
+import useTheme from '../hooks/useTheme';
 
-const ThemeToggle = () => {
-    const [theme, setTheme] = useState(localStorage.getItem("theme") ? localStorage.getItem("theme") : "light");
-
-    useEffect(() => {
-        localStorage.setItem("theme", theme);
-        const localTheme = localStorage.getItem("theme");
-        document.querySelector("html").setAttribute("class", localTheme);
-    }, [theme]);
-
-    const handleToggle = (e) => {
-        if (e.target.checked) { setTheme("dark"); } 
-        else { setTheme("light"); }
-    };
-
-    return (
-        <label className="swap swap-rotate text-brand-primary">
-            <input type="checkbox" onChange={handleToggle} checked={theme === "light" ? false : true} />
-            <FaSun className="swap-on fill-current w-6 h-6" />
-            <FaMoon className="swap-off fill-current w-6 h-6" />
-        </label>
-    );
-};
-export default ThemeToggle;
+export default function ThemeToggle() {
+  const { dark, setDark } = useTheme();
+  return (
+    <button
+      onClick={() => setDark(!dark)}
+      aria-label="Toggle theme"
+      className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+    >
+      {dark ? '🌙' : '☀️'}
+    </button>
+  );
+}

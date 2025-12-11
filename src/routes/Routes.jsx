@@ -1,46 +1,57 @@
-import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
-import Home from "../pages/Home/Home";
-import Login from "../pages/Authentication/Login";
-import Register from "../pages/Authentication/Register";
-import AllTickets from "../pages/Shared/AllTickets";
-import TicketDetails from "../pages/Shared/TicketDetails";
-import PrivateRoute from "./PrivateRoute";
-import DashboardLayout from "../layouts/DashboardLayout";
-import MyProfile from "../pages/Dashboard/User/MyProfile";
-import AdminRoute from "./AdminRoute";
-import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
-import ErrorPage from "../pages/Shared/ErrorPage";
-// ... Import other pages
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import MainLayout from '../layouts/MainLayout';
+import DashboardLayout from '../layouts/DashboardLayout';
+import Home from '../pages/Home/Home';
+import AllTickets from '../pages/Shared/AllTickets';
+import TicketDetails from '../pages/Shared/TicketDetails';
+import Login from '../pages/Authentication/Login';
+import Register from '../pages/Authentication/Register';
+import ErrorPage from '../pages/Shared/ErrorPage';
+import MyBookedTickets from '../pages/Dashboard/User/MyBookedTickets';
+import AddTicket from '../pages/Dashboard/Vendor/AddTicket';
+import ManageUsers from '../pages/Dashboard/Admin/ManageUsers';
+import useAuth from '../hooks/useAuth';
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      { path: "/", element: <Home /> },
-      { path: "all-tickets", element: <AllTickets /> }, // Private optional as per[cite: 36], but usually public view, private book
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
-      { 
-        path: "ticket/:id", 
-        element: <PrivateRoute><TicketDetails /></PrivateRoute> // [cite: 110]
-      }
-    ]
-  },
-  {
-    path: "dashboard",
-    element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
-    children: [
-        // User Routes
-        { path: "profile", element: <MyProfile /> },
-        
-        // Admin Routes
-        { path: "manage-users", element: <AdminRoute><ManageUsers /></AdminRoute> },
-        
-        // Vendor Routes
-        // ... Add vendor routes here
-    ]
-  }
-]);
+// Role guard HOC
+const RequireAuth = ({ children }) => {
+  const { user, loadingAuth } = useAuth();
+  if (loadingAuth) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+};
+
+const RequireRole = ({ role, children }) => {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  // For role we need to fetch user role from server. For simplicity: call endpoint
+  // But here we assume role is stored in local user object (if not, fetch on mount in component).
+  const storedRole = localStorage.getItem('mRole'); // set when you fetch user details
+  if (storedRole !== role) return <Navigate to="/" replace />;
+  return children;
+};
+
+export default function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route index element={<Home />} />
+        <Route path="all-tickets" element={<RequireAuth><AllTickets/></RequireAuth>} />
+        <Route path="ticket/:id" element={<RequireAuth><TicketDetails/></RequireAuth>} />
+        <Route path="login" element={<Login/>} />
+        <Route path="register" element={<Register/>} />
+        <Route path="*" element={<ErrorPage/>} />
+      </Route>
+
+      <Route path="/dashboard" element={
+        <RequireAuth>
+          <DashboardLayout />
+        </RequireAuth>
+      }>
+        <Route path="user/bookings" element={<MyBookedTickets />} />
+        <Route path="vendor/add-ticket" element={<RequireRole role="vendor"><AddTicket /></RequireRole>} />
+        <Route path="admin/manage-users" element={<RequireRole role="admin"><ManageUsers /></RequireRole>} />
+      </Route>
+    </Routes>
+  );
+}

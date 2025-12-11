@@ -1,27 +1,48 @@
-import useAuth from "../../../hooks/useAuth";
-import useRole from "../../../hooks/useRole";
+// src/pages/Dashboard/User/MyProfile.jsx
+import React, { useEffect, useState } from 'react';
+import useAuth from '../../../hooks/useAuth';
+import axiosSecureInstance from '../../../api/axiosSecure';
+import Loading from '../../../components/Loading';
 
-const MyProfile = () => {
-    const { user } = useAuth();
-    const [role] = useRole();
+export default function MyProfile() {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    return (
-        <div className="flex flex-col items-center justify-center pt-10 text-white">
-            <div className="avatar mb-6">
-                <div className="w-32 rounded-full ring ring-brand-primary ring-offset-base-100 ring-offset-2">
-                    <img src={user?.photoURL} alt="Profile" />
-                </div>
-            </div>
-            <h2 className="text-4xl font-bold text-brand-primary">{user?.displayName}</h2>
-            <p className="text-xl text-gray-400 mt-2">{user?.email}</p>
-            <div className="badge badge-accent badge-lg mt-4 capitalize">{role}</div>
-            
-            <div className="mt-10 bg-gray-900 p-8 rounded-xl border border-gray-700 max-w-lg w-full">
-                <h3 className="text-2xl font-bold mb-4 border-b border-gray-700 pb-2">Account Details</h3>
-                <div className="flex justify-between py-2"><span>User ID:</span> <span className="text-gray-400">{user?.uid}</span></div>
-                <div className="flex justify-between py-2"><span>Last Login:</span> <span className="text-gray-400">{user?.metadata?.lastSignInTime}</span></div>
-            </div>
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      try {
+        // If server has /users?email=... it will return the user data
+        const res = await axiosSecureInstance.get(`/users?email=${encodeURIComponent(user?.email)}`);
+        const data = Array.isArray(res.data) ? res.data[0] : res.data;
+        if (mounted) setProfile(data || { name: user?.displayName, email: user?.email, photo: user?.photoURL });
+      } catch (err) {
+        console.error(err);
+        if (mounted) setProfile({ name: user?.displayName, email: user?.email, photo: user?.photoURL });
+      } finally { if (mounted) setLoading(false); }
+    }
+    if (user) load();
+    return () => (mounted = false);
+  }, [user]);
+
+  if (loading) return <Loading />;
+
+  return (
+    <div className="max-w-2xl">
+      <h2 className="text-2xl font-semibold mb-4">My Profile</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <img src={profile?.photo || '/default-avatar.png'} alt="profile" className="w-40 h-40 rounded-full object-cover" />
         </div>
-    );
-};
-export default MyProfile;
+        <div>
+          <p><strong>Name:</strong> {profile?.name}</p>
+          <p><strong>Email:</strong> {profile?.email}</p>
+          <p><strong>Role:</strong> {profile?.role || 'user'}</p>
+          <p><strong>Status:</strong> {profile?.status || 'active'}</p>
+        </div>
+      </div>
+    </div>
+  );
+}

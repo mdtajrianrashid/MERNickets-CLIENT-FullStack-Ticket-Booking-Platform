@@ -1,12 +1,13 @@
-import { Link } from "react-router-dom";
+// src/pages/Shared/ErrorPage.jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const ErrorPage = () => {
-    return (
-        <div className="h-screen flex flex-col items-center justify-center bg-black text-brand-primary">
-            <h1 className="text-9xl font-bold">404</h1>
-            <p className="text-2xl mt-4 text-white">Oops! The destination you are looking for does not exist.</p>
-            <Link to="/" className="btn btn-outline border-brand-primary text-brand-primary mt-8">Go Home</Link>
-        </div>
-    );
-};
-export default ErrorPage;
+export default function ErrorPage() {
+  return (
+    <div className="min-h-[60vh] flex flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold mb-2">404</h1>
+      <p className="text-lg mb-4">Page not found</p>
+      <Link to="/" className="btn">Back to Home</Link>
+    </div>
+  );
+}

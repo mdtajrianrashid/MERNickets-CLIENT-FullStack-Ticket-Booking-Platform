@@ -1,59 +1,98 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import TicketCard from "../../components/TicketCard";
-import Loading from "../../components/Loading";
 
-const AllTickets = () => {
-    const [tickets, setTickets] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [searchFrom, setSearchFrom] = useState("");
-    const [searchTo, setSearchTo] = useState("");
-    const [transportFilter, setTransportFilter] = useState("");
-    const [sortOrder, setSortOrder] = useState(""); // 'asc' or 'desc'
-    const axiosPublic = useAxiosPublic();
+export default function AllTickets() {
+  const axiosPublic = useAxiosPublic();
 
-    useEffect(() => {
-        setLoading(true);
-        // Using query params for server-side filtering (efficient)
-        const query = `/tickets?from=${searchFrom}&to=${searchTo}&type=${transportFilter}&sort=${sortOrder}`;
-        
-        axiosPublic.get(query)
-            .then(res => {
-                setTickets(res.data);
-                setLoading(false);
-            });
-    }, [searchFrom, searchTo, transportFilter, sortOrder, axiosPublic]);
+  const [tickets, setTickets] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [q, setQ] = useState("");
+  const [transport, setTransport] = useState("");
+  const [sort, setSort] = useState("");
+  const [page, setPage] = useState(1);
+  const perPage = 6;
 
-    return (
-        <div className="pt-24 px-4 max-w-7xl mx-auto min-h-screen">
-            <h2 className="text-3xl font-bold text-center mb-10">All Available Tickets</h2>
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = { page, limit: perPage };
+      if (q) params.search = q;
+      if (transport) params.transport = transport;
+      if (sort) params.sort = sort;
 
-            {/* Filters Bar [cite: 247] */}
-            <div className="bg-base-200 p-4 rounded-xl flex flex-wrap gap-4 justify-center items-center mb-8 shadow-lg border border-brand-primary/20">
-                <input type="text" placeholder="From (Location)" className="input input-bordered w-full max-w-xs" onChange={e => setSearchFrom(e.target.value)} />
-                <input type="text" placeholder="To (Location)" className="input input-bordered w-full max-w-xs" onChange={e => setSearchTo(e.target.value)} />
-                
-                <select className="select select-bordered" onChange={e => setTransportFilter(e.target.value)}>
-                    <option value="">All Transport</option>
-                    <option value="bus">Bus</option>
-                    <option value="train">Train</option>
-                    <option value="air">Air</option>
-                </select>
+      const res = await axiosPublic.get("/tickets", { params });
+      setTickets(res.data.items);
+      setTotal(res.data.total);
+    };
 
-                <select className="select select-bordered" onChange={e => setSortOrder(e.target.value)}>
-                    <option value="">Sort by Price</option>
-                    <option value="asc">Low to High</option>
-                    <option value="desc">High to Low</option>
-                </select>
-            </div>
+    fetchData();
+  }, [q, transport, sort, page, axiosPublic]);
 
-            {loading ? <Loading /> : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {tickets.map(ticket => <TicketCard key={ticket._id} ticket={ticket} />)}
-                </div>
-            )}
+  const pages = Math.ceil(total / perPage);
+
+  return (
+    <div>
+      {/* filters */}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search from or to"
+          className="input w-full col-span-2"
+        />
+
+        <select
+          value={transport}
+          onChange={(e) => setTransport(e.target.value)}
+          className="select w-full"
+        >
+          <option value="">All transport</option>
+          <option value="bus">Bus</option>
+          <option value="train">Train</option>
+          <option value="launch">Launch</option>
+          <option value="plane">Plane</option>
+        </select>
+
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="select w-full"
+        >
+          <option value="">Sort</option>
+          <option value="asc">Price Low → High</option>
+          <option value="desc">Price High → Low</option>
+        </select>
+      </div>
+
+      {/* tickets */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {tickets.map((t) => (
+          <TicketCard key={t._id} ticket={t} />
+        ))}
+      </div>
+
+      {/* pagination */}
+      <div className="mt-6 flex items-center justify-center gap-2">
+        <button
+          className="btn btn-sm"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          Prev
+        </button>
+
+        <div>
+          Page {page} / {pages || 1}
         </div>
-    );
-};
 
-export default AllTickets;
+        <button
+          className="btn btn-sm"
+          onClick={() => setPage((p) => Math.min(pages, p + 1))}
+          disabled={page === pages}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
