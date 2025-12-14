@@ -1,6 +1,6 @@
 // src/pages/Home/Home.jsx
 import React, { useEffect, useState } from "react";
-import axiosPublic from "../utils/axiosPublic";
+import axiosPublic from "../../utils/axiosPublic";
 import Spinner from "../../components/Spinner";
 import { Link } from "react-router-dom";
 

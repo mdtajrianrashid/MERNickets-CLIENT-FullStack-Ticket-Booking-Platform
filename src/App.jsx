@@ -1,4 +1,4 @@
 // src/App.jsx
 import React from "react";
-import RoutesApp from "./pages/router/Routes";
+import RoutesApp from "./router/Routes";
 export default function App(){ return <RoutesApp />; }

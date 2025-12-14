@@ -1,10 +1,10 @@
 // src/pages/TicketDetails/TicketDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosPublic from "../utils/axiosPublic";
-import axiosSecure from "../utils/axiosSecure";
+import axiosPublic from "../../utils/axiosPublic";
+import axiosSecure from "../../utils/axiosSecure";
 import Spinner from "../../components/Spinner";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 function Countdown({ target }) {
   const [left, setLeft] = useState({});
