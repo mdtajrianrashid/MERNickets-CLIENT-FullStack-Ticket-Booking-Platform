@@ -17,44 +17,42 @@ const provider = new GoogleAuthProvider();
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);             // Firebase user
-  const [dbUser, setDbUser] = useState(undefined);   // DB user (role)
+  const [user, setUser] = useState(null);
+  const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = auth.onAuthStateChanged(async (u) => {
+    const unsubscribe = auth.onAuthStateChanged(async (u) => {
       setUser(u);
 
       if (u?.email) {
         try {
-          // Ensure user exists in DB
+          // ✅ Register user (NO ROLE from frontend)
           await axiosPublic.post("/auth/register", {
             name: u.displayName || "",
             email: u.email,
-            role: "user",
           });
 
-          // Get JWT
+          // ✅ Get JWT
           const jwtRes = await axiosPublic.post("/auth/jwt", { email: u.email });
           localStorage.setItem("mernickets_token", jwtRes.data.token);
 
-          // Get DB user (role)
+          // ✅ Get DB user (ROLE SOURCE OF TRUTH)
           const { data } = await axiosPublic.get(`/auth/me?email=${u.email}`);
           setDbUser(data);
         } catch (error) {
           console.error("AuthProvider error:", error);
-          // Fallback to prevent infinite loading
-          setDbUser({ role: "user" });
+          setDbUser(null);
         }
       } else {
-        setDbUser(undefined);
+        setDbUser(null);
         localStorage.removeItem("mernickets_token");
       }
 
       setLoading(false);
     });
 
-    return () => unsub();
+    return () => unsubscribe();
   }, []);
 
   const register = async ({ name, email, password, photoURL }) => {
@@ -86,13 +84,21 @@ export default function AuthProvider({ children }) {
     setLoading(true);
     await signOut(auth);
     localStorage.removeItem("mernickets_token");
-    setDbUser(undefined);
+    setDbUser(null);
     setLoading(false);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, dbUser, loading, register, login, loginWithGoogle, logout }}
+      value={{
+        user,
+        dbUser,
+        loading,
+        register,
+        login,
+        loginWithGoogle,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

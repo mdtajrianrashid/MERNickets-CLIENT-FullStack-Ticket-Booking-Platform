@@ -20,21 +20,16 @@ import useAuth from "../hooks/useAuth";
 /* ---------- Private Route ---------- */
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
-
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
-
   return children;
 }
 
 /* ---------- Role Route ---------- */
 function RoleRoute({ role, children }) {
   const { dbUser, loading } = useAuth();
-
-  if (loading) return <div>Loading...</div>;
-  if (!dbUser) return <div>Loading...</div>;
+  if (loading || !dbUser) return <div>Loading...</div>;
   if (dbUser.role !== role) return <Navigate to="/" replace />;
-
   return children;
 }
 
@@ -42,17 +37,11 @@ function RoleRoute({ role, children }) {
 function DashboardRedirect() {
   const { user, dbUser, loading } = useAuth();
 
-  if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!dbUser) {
+  if (loading || !dbUser) {
     return <div className="text-center mt-10">Preparing dashboard...</div>;
   }
+
+  if (!user) return <Navigate to="/login" replace />;
 
   if (dbUser.role === "admin") {
     return <Navigate to="/dashboard/admin" replace />;
@@ -76,7 +65,6 @@ export default function RoutesApp() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
 
-        {/* Dashboard Root */}
         <Route
           path="dashboard"
           element={
@@ -86,7 +74,6 @@ export default function RoutesApp() {
           }
         />
 
-        {/* User Dashboard */}
         <Route
           path="dashboard/user"
           element={
@@ -101,7 +88,6 @@ export default function RoutesApp() {
           <Route path="payment/:bookingId" element={<PaymentPage />} />
         </Route>
 
-        {/* Vendor Dashboard */}
         <Route
           path="dashboard/vendor"
           element={
@@ -113,7 +99,6 @@ export default function RoutesApp() {
           }
         />
 
-        {/* Admin Dashboard */}
         <Route
           path="dashboard/admin"
           element={
