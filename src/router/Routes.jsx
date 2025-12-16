@@ -12,8 +12,15 @@ import NotFound from "../pages/NotFound";
 import UserDashboard from "../pages/Dashboard/UserDashboard";
 import VendorDashboard from "../pages/Dashboard/VendorDashboard";
 import AdminDashboard from "../pages/Dashboard/AdminDashboard";
+
 import MyBookings from "../pages/Dashboard/MyBookings";
 import PaymentPage from "../pages/Dashboard/PaymentPage";
+
+// ✅ Vendor pages
+import AddTicket from "../pages/Dashboard/AddTicket";
+import MyAddedTickets from "../pages/Dashboard/MyAddedTickets";
+import RequestedBookings from "../pages/Dashboard/RequestedBookings";
+import VendorRevenue from "../pages/Dashboard/VendorRevenue";
 
 import useAuth from "../hooks/useAuth";
 
@@ -28,7 +35,9 @@ function PrivateRoute({ children }) {
 /* ---------- Role Route ---------- */
 function RoleRoute({ role, children }) {
   const { dbUser, loading } = useAuth();
-  if (loading || !dbUser) return <div>Loading...</div>;
+  if (loading || !dbUser) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
   if (dbUser.role !== role) return <Navigate to="/" replace />;
   return children;
 }
@@ -59,12 +68,15 @@ export default function RoutesApp() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
+
+        {/* ---------- PUBLIC ---------- */}
         <Route index element={<Home />} />
         <Route path="tickets" element={<AllTickets />} />
         <Route path="ticket/:id" element={<TicketDetails />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
 
+        {/* ---------- DASHBOARD REDIRECT ---------- */}
         <Route
           path="dashboard"
           element={
@@ -74,6 +86,7 @@ export default function RoutesApp() {
           }
         />
 
+        {/* ---------- USER DASHBOARD ---------- */}
         <Route
           path="dashboard/user"
           element={
@@ -88,6 +101,7 @@ export default function RoutesApp() {
           <Route path="payment/:bookingId" element={<PaymentPage />} />
         </Route>
 
+        {/* ---------- VENDOR DASHBOARD ---------- */}
         <Route
           path="dashboard/vendor"
           element={
@@ -97,8 +111,15 @@ export default function RoutesApp() {
               </RoleRoute>
             </PrivateRoute>
           }
-        />
+        >
+          <Route index element={<AddTicket />} />
+          <Route path="add-ticket" element={<AddTicket />} />
+          <Route path="my-tickets" element={<MyAddedTickets />} />
+          <Route path="requests" element={<RequestedBookings />} />
+          <Route path="revenue" element={<VendorRevenue />} />
+        </Route>
 
+        {/* ---------- ADMIN DASHBOARD ---------- */}
         <Route
           path="dashboard/admin"
           element={
@@ -110,6 +131,7 @@ export default function RoutesApp() {
           }
         />
 
+        {/* ---------- 404 ---------- */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
