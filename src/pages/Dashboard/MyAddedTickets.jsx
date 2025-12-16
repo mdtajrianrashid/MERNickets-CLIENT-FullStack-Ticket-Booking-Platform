@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAuth from "../../hooks/useAuth";
 import Spinner from "../../components/Spinner";
 
 export default function MyAddedTickets() {
   const axiosSecure = useAxiosSecure();
-  const { dbUser } = useAuth();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosSecure.get("/tickets/admin").then(res => {
-      const mine = res.data.filter(
-        t => t.vendorEmail === dbUser.email
-      );
-      setTickets(mine);
+    axiosSecure.get("/tickets/vendor").then(res => {
+      setTickets(res.data);
       setLoading(false);
     });
-  }, [axiosSecure, dbUser.email]);
+  }, [axiosSecure]);
 
   if (loading) return <Spinner />;
 

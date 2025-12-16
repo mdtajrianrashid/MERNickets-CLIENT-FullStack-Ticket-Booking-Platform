@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAuth from "../../hooks/useAuth";
 import Spinner from "../../components/Spinner";
 
 export default function RequestedBookings() {
   const axiosSecure = useAxiosSecure();
-  const { dbUser } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosSecure.get("/bookings").then(res => {
-      const vendorBookings = res.data.filter(
-        b => b.ticket?.vendorEmail === dbUser.email
-      );
-      setBookings(vendorBookings);
+    axiosSecure.get("/bookings/vendor").then(res => {
+      setBookings(res.data);
       setLoading(false);
     });
-  }, [axiosSecure, dbUser.email]);
+  }, [axiosSecure]);
 
   const handleAction = async (id, action) => {
     await axiosSecure.patch(`/bookings/${action}/${id}`);
@@ -49,8 +44,18 @@ export default function RequestedBookings() {
               <td>{b.quantity}</td>
               <td>${b.totalPrice}</td>
               <td className="space-x-2">
-                <button onClick={() => handleAction(b._id, "accept")} className="btn btn-xs btn-success">Accept</button>
-                <button onClick={() => handleAction(b._id, "reject")} className="btn btn-xs btn-error">Reject</button>
+                <button
+                  onClick={() => handleAction(b._id, "accept")}
+                  className="btn btn-xs btn-success"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleAction(b._id, "reject")}
+                  className="btn btn-xs btn-error"
+                >
+                  Reject
+                </button>
               </td>
             </tr>
           ))}

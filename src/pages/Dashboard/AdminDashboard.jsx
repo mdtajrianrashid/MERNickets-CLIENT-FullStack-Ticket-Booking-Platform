@@ -21,8 +21,9 @@ export default function AdminDashboard() {
       {/* PROFILE */}
       <div className="card p-4">
         <h3 className="font-semibold">Admin Profile</h3>
-        <p>Email: {dbUser.email}</p>
-        <p>Role: {dbUser.role}</p>
+        <p><b>Name:</b> {dbUser?.name}</p>
+        <p><b>Email:</b> {dbUser.email}</p>
+        <p><b>Role:</b> {dbUser.role}</p>
       </div>
 
       {/* MANAGE TICKETS */}
