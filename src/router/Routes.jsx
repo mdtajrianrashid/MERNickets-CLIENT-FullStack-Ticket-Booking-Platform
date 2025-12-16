@@ -80,22 +80,23 @@ export default function RoutesApp() {
         </Route>
 
         <Route
-          path="dashboard/vendor"
-          element={
-            <PrivateRoute>
-              <RoleRoute role="vendor">
-                <VendorDashboard />
-              </RoleRoute>
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<VendorProfile />} />
-          <Route path="profile" element={<VendorProfile />} />
-          <Route path="add-ticket" element={<AddTicket />} />
-          <Route path="my-tickets" element={<MyAddedTickets />} />
-          <Route path="requests" element={<RequestedBookings />} />
-          <Route path="revenue" element={<VendorRevenue />} />
-        </Route>
+  path="dashboard/vendor"
+  element={
+    <PrivateRoute>
+      <RoleRoute role="vendor">
+        <VendorDashboard />
+      </RoleRoute>
+    </PrivateRoute>
+  }
+>
+  <Route index element={<VendorProfile />} />
+  <Route path="profile" element={<VendorProfile />} />
+  <Route path="add-ticket" element={<AddTicket />} />
+  <Route path="edit-ticket/:id" element={<AddTicket />} />
+  <Route path="my-tickets" element={<MyAddedTickets />} />
+  <Route path="requests" element={<RequestedBookings />} />
+  <Route path="revenue" element={<VendorRevenue />} />
+</Route>
 
         <Route
           path="dashboard/admin"
