@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosPublic from "../../utils/axiosPublic";
-import axiosSecure from "../../utils/axiosSecure";
 import Spinner from "../../components/Spinner";
 import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 /* Countdown Component */
 function Countdown({ target }) {
@@ -43,6 +43,7 @@ export default function TicketDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
   const [ticket, setTicket] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -67,10 +68,14 @@ export default function TicketDetails() {
   const canBook = !isDeparturePassed && !soldOut;
 
   const handleBooking = async () => {
-    if (!user) return navigate("/login");
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
     if (quantity < 1 || quantity > ticket.ticketQuantity) {
-      return alert("Invalid booking quantity");
+      alert("Invalid booking quantity");
+      return;
     }
 
     setBookingLoading(true);
@@ -79,7 +84,10 @@ export default function TicketDetails() {
         ticketId: ticket._id,
         quantity,
       });
-      navigate("/dashboard/user");
+
+      // Assignment requirement:
+      // Booking saved as "pending" and appears in My Booked Tickets
+      navigate("/dashboard/my-bookings");
     } catch (err) {
       alert(err.response?.data?.message || "Booking failed");
     } finally {
@@ -133,6 +141,7 @@ export default function TicketDetails() {
               value={quantity}
               onChange={e => setQuantity(Number(e.target.value))}
               className="input input-bordered w-28"
+              disabled={!canBook}
             />
 
             <button
