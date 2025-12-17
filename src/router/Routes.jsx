@@ -20,6 +20,10 @@ import RequestedBookings from "../pages/Dashboard/RequestedBookings";
 import VendorRevenue from "../pages/Dashboard/VendorRevenue";
 import VendorProfile from "../pages/Dashboard/VendorProfile";
 
+import Transactions from "../pages/Dashboard/Transactions";
+import UserProfile from "../pages/Dashboard/UserProfile";
+
+
 import useAuth from "../hooks/useAuth";
 
 function PrivateRoute({ children }) {
@@ -65,19 +69,21 @@ export default function RoutesApp() {
           }
         />
 
-        <Route
-          path="dashboard/user"
-          element={
-            <PrivateRoute>
-              <RoleRoute role="user">
-                <UserDashboard />
-              </RoleRoute>
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<MyBookings />} />
-          <Route path="payment/:bookingId" element={<PaymentPage />} />
-        </Route>
+<Route
+  path="dashboard/user"
+  element={
+    <PrivateRoute>
+      <RoleRoute role="user">
+        <UserDashboard />
+      </RoleRoute>
+    </PrivateRoute>
+  }
+>
+  <Route index element={<MyBookings />} />
+  <Route path="payment/:bookingId" element={<PaymentPage />} />
+  <Route path="transactions" element={<Transactions />} />
+  <Route path="profile" element={<UserProfile />} />
+</Route>
 
         <Route
   path="dashboard/vendor"

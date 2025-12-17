@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Spinner from "../../components/Spinner";
 
@@ -16,37 +16,36 @@ export default function AddTicket() {
     to: "",
     transportType: "",
     price: "",
-    quantity: "",
+    ticketQuantity: "",
     departure: "",
     image: "",
   });
 
   useEffect(() => {
     if (isEdit) {
-      axiosSecure.get(`/tickets/vendor/${id}`).then((res) => {
-        setForm(res.data);
+      axiosSecure.get(`/tickets/vendor/${id}`).then(res => {
+        const t = res.data;
+        setForm({
+          ...t,
+          departure: t.departure?.slice(0, 16),
+        });
       });
     }
   }, [id]);
 
-  const handleChange = (e) =>
+  const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-
     try {
       if (isEdit) {
         await axiosSecure.patch(`/tickets/${id}`, form);
-        alert("Ticket updated successfully");
       } else {
         await axiosSecure.post("/tickets", form);
-        alert("Ticket added. Waiting for admin approval.");
       }
       navigate("/dashboard/vendor/my-tickets");
-    } catch (err) {
-      alert(err.response?.data?.message || "Operation failed");
     } finally {
       setLoading(false);
     }
@@ -61,14 +60,14 @@ export default function AddTicket() {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <input name="title" value={form.title} onChange={handleChange} className="input input-bordered w-full" placeholder="Title" required />
-        <input name="from" value={form.from} onChange={handleChange} className="input input-bordered w-full" placeholder="From" required />
-        <input name="to" value={form.to} onChange={handleChange} className="input input-bordered w-full" placeholder="To" required />
-        <input name="transportType" value={form.transportType} onChange={handleChange} className="input input-bordered w-full" placeholder="Transport Type" required />
-        <input type="number" name="price" value={form.price} onChange={handleChange} className="input input-bordered w-full" placeholder="Price" required />
-        <input type="number" name="quantity" value={form.quantity} onChange={handleChange} className="input input-bordered w-full" placeholder="Quantity" required />
-        <input type="datetime-local" name="departure" value={form.departure} onChange={handleChange} className="input input-bordered w-full" required />
-        <input name="image" value={form.image} onChange={handleChange} className="input input-bordered w-full" placeholder="Image URL" />
+        <input name="title" required value={form.title} onChange={handleChange} className="input w-full" placeholder="Title" />
+        <input name="from" required value={form.from} onChange={handleChange} className="input w-full" placeholder="From" />
+        <input name="to" required value={form.to} onChange={handleChange} className="input w-full" placeholder="To" />
+        <input name="transportType" required value={form.transportType} onChange={handleChange} className="input w-full" placeholder="Transport Type" />
+        <input type="number" name="price" required value={form.price} onChange={handleChange} className="input w-full" placeholder="Price" />
+        <input type="number" name="ticketQuantity" required value={form.ticketQuantity} onChange={handleChange} className="input w-full" placeholder="Ticket Quantity" />
+        <input type="datetime-local" name="departure" required value={form.departure} onChange={handleChange} className="input w-full" />
+        <input name="image" value={form.image} onChange={handleChange} className="input w-full" placeholder="Image URL" />
 
         <button className="btn btn-primary w-full">
           {isEdit ? "Update Ticket" : "Add Ticket"}
