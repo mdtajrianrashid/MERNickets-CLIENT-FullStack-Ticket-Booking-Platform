@@ -1,4 +1,3 @@
-// src/pages/Dashboard/MyAddedTickets.jsx
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -33,8 +32,6 @@ export default function MyAddedTickets() {
   }, []);
 
   const handleDelete = async (id) => {
-    // Styling the confirm dialog is limited by browser, 
-    // but the logic remains 100% intact as requested.
     const confirmDelete = window.confirm("Are you sure you want to delete this ticket?");
     if (!confirmDelete) return;
 
@@ -42,7 +39,6 @@ export default function MyAddedTickets() {
     fetchTickets();
   };
 
-  // Animation Variants
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -61,7 +57,6 @@ export default function MyAddedTickets() {
   return (
     <div className="p-6 md:p-8">
       
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
@@ -83,7 +78,6 @@ export default function MyAddedTickets() {
       </div>
 
       {tickets.length === 0 ? (
-        /* Empty State */
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -96,7 +90,6 @@ export default function MyAddedTickets() {
           <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6">Start by creating your first ticket listing.</p>
         </motion.div>
       ) : (
-        /* Ticket Grid */
         <motion.div 
           variants={container}
           initial="hidden"
@@ -105,14 +98,13 @@ export default function MyAddedTickets() {
         >
           {tickets.map((ticket) => {
             
-            // Determine Status Styles
             let statusColor = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
             let statusIcon = null;
 
             if (ticket.status === "pending") {
               statusColor = "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
               statusIcon = <ClockIcon className="w-4 h-4" />;
-            } else if (ticket.status === "approved" || ticket.status === "accepted") { // Assuming 'approved' is valid based on typical flow, preserving fallback
+            } else if (ticket.status === "approved" || ticket.status === "accepted") {
               statusColor = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
               statusIcon = <CheckCircleIcon className="w-4 h-4" />;
             } else if (ticket.status === "rejected") {
@@ -129,25 +121,21 @@ export default function MyAddedTickets() {
                 whileHover={{ y: -5 }}
                 className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col h-full group"
               >
-                {/* Image Header */}
                 <div className="relative h-48 overflow-hidden">
                   <img 
                     src={ticket.image || "/placeholder.jpg"} 
                     alt={ticket.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   
-                  {/* Status Badge */}
                   <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 shadow-sm backdrop-blur-md ${statusColor}`}>
                     {statusIcon}
                     {ticket.status}
                   </div>
 
-                  {/* Title Overlay */}
                   <div className="absolute bottom-4 left-4 right-4 text-white">
                     <h3 className="font-bold text-lg truncate">{ticket.title}</h3>
-                    {/* Assuming 'from' and 'to' exist in ticket object based on other pages, ensuring safe render */}
                     {(ticket.from && ticket.to) && (
                         <div className="flex items-center text-sm opacity-90">
                             <MapPinIcon className="w-4 h-4 mr-1" />
@@ -157,8 +145,7 @@ export default function MyAddedTickets() {
                   </div>
                 </div>
 
-                {/* Details Body */}
-                <div className="p-5 flex flex-col flex-grow">
+                <div className="p-5 flex flex-col grow">
                   <div className="flex items-center justify-between mb-4 bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
                     <span className="text-gray-500 dark:text-gray-400 text-sm">Selling Price</span>
                     <span className="font-bold text-gray-900 dark:text-white flex items-center text-lg">
@@ -167,7 +154,6 @@ export default function MyAddedTickets() {
                     </span>
                   </div>
 
-                  {/* Actions Footer */}
                   <div className="mt-auto grid grid-cols-2 gap-3 pt-2">
                     <button
                       disabled={isRejected}

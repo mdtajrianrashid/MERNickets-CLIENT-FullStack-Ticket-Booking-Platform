@@ -1,4 +1,3 @@
-// src/pages/Dashboard/AdminDashboard.jsx
 import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
@@ -24,11 +23,8 @@ export default function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview"); // overview | tickets | users
+  const [activeTab, setActiveTab] = useState("overview");
 
-  /* =========================
-      LOAD DATA
-  ========================= */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,9 +43,6 @@ export default function AdminDashboard() {
     fetchData();
   }, [axiosSecure]);
 
-  /* =========================
-      HANDLERS
-  ========================= */
   const handleApprove = async (id) => {
     try {
       const res = await axiosSecure.patch(`/tickets/approve/${id}`);
@@ -108,7 +101,6 @@ export default function AdminDashboard() {
       
       <div className="max-w-7xl mx-auto space-y-8">
         
-        {/* HEADER & TABS */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
@@ -137,10 +129,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* CONTENT AREA */}
         <AnimatePresence mode="wait">
           
-          {/* 1. OVERVIEW TAB */}
           {activeTab === "overview" && (
             <motion.div 
               key="overview"
@@ -149,9 +139,8 @@ export default function AdminDashboard() {
               exit={{ opacity: 0, y: -10 }}
               className="grid grid-cols-1 lg:grid-cols-3 gap-6"
             >
-              {/* Profile Card */}
               <div className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                <div className="h-32 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
+                <div className="h-32 bg-linear-to-r from-indigo-600 to-purple-600"></div>
                 <div className="px-6 pb-6 relative">
                    <div className="w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 bg-gray-200 -mt-12 overflow-hidden shadow-lg">
                       <img src={user?.photoURL} alt="Admin" className="w-full h-full object-cover"/>
@@ -166,7 +155,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Stats Grid */}
               <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
                  <StatCard 
                     title="Total Tickets" 
@@ -196,7 +184,6 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* 2. TICKETS MANAGEMENT TAB */}
           {activeTab === "tickets" && (
             <motion.div
               key="tickets"
@@ -255,7 +242,6 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* 3. USERS MANAGEMENT TAB */}
           {activeTab === "users" && (
             <motion.div
               key="users"
@@ -337,7 +323,6 @@ export default function AdminDashboard() {
   );
 }
 
-// Helper Component for Stats
 function StatCard({ title, value, icon, color }) {
     return (
         <div className={`p-6 rounded-2xl shadow-lg text-white ${color} relative overflow-hidden`}>
@@ -348,7 +333,6 @@ function StatCard({ title, value, icon, color }) {
             <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 p-3 rounded-xl backdrop-blur-sm">
                 {icon}
             </div>
-            {/* Decor */}
             <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
         </div>
     )

@@ -1,9 +1,7 @@
-// src/context/ThemeContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext(null);
 
-// Detect system theme
 const getSystemTheme = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
@@ -14,17 +12,15 @@ export const ThemeProvider = ({ children }) => {
     return localStorage.getItem("theme") || getSystemTheme();
   });
 
-  // Apply theme to <html>
 useEffect(() => {
   const root = document.documentElement;
 
   root.classList.toggle("dark", theme === "dark");
-  root.setAttribute("data-theme", theme); // 🔥 IMPORTANT for DaisyUI
+  root.setAttribute("data-theme", theme);
 
   localStorage.setItem("theme", theme);
 }, [theme]);
 
-  // Listen for system theme changes
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
 

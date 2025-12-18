@@ -1,4 +1,3 @@
-// src/pages/AllTickets/AllTickets.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import axiosPublic from "../../utils/axiosPublic";
 import Spinner from "../../components/Spinner";
@@ -18,21 +17,15 @@ import {
 export default function AllTickets() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [searchParams] = useSearchParams();
-
-  // filters
   const [queryFrom, setQueryFrom] = useState("");
   const [queryTo, setQueryTo] = useState("");
   const [transport, setTransport] = useState("");
   const [departureDate, setDepartureDate] = useState("");
   const [sort, setSort] = useState("");
-
-  // pagination
   const [page, setPage] = useState(1);
   const perPage = 6;
 
-  // 🔹 Read query params on load
   useEffect(() => {
     setQueryFrom(searchParams.get("from") || "");
     setQueryTo(searchParams.get("to") || "");
@@ -44,7 +37,7 @@ export default function AllTickets() {
   useEffect(() => {
     setLoading(true);
     axiosPublic
-      .get("/tickets") // ✅ already returns ONLY approved tickets
+      .get("/tickets")
       .then(res => setTickets(res.data || []))
       .finally(() => setLoading(false));
   }, []);
@@ -80,8 +73,6 @@ export default function AllTickets() {
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const paginated = filtered.slice((page - 1) * perPage, page * perPage);
-
-  // Animations
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -102,7 +93,6 @@ export default function AllTickets() {
       
       <div className="max-w-7xl mx-auto">
         
-        {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
             <div>
                 <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
@@ -119,11 +109,9 @@ export default function AllTickets() {
             </div>
         </div>
 
-        {/* FILTER & SORT BAR */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-5 mb-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 
-                {/* From */}
                 <div className="relative group">
                     <MapPinIcon className="w-5 h-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <input 
@@ -134,7 +122,6 @@ export default function AllTickets() {
                     />
                 </div>
 
-                {/* To */}
                 <div className="relative group">
                     <MapPinIcon className="w-5 h-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <input 
@@ -145,7 +132,6 @@ export default function AllTickets() {
                     />
                 </div>
 
-                {/* Transport */}
                 <div className="relative group">
                     <AdjustmentsHorizontalIcon className="w-5 h-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <select 
@@ -161,9 +147,8 @@ export default function AllTickets() {
                     </select>
                 </div>
 
-                {/* Date */}
                 <div className="relative group">
-                    {/* <CalendarDaysIcon className="w-5 h-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" /> */}
+
                     <input 
                         type="date"
                         value={departureDate} 
@@ -172,7 +157,6 @@ export default function AllTickets() {
                     />
                 </div>
 
-                {/* Sort */}
                 <div className="relative group">
                     <FunnelIcon className="w-5 h-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <select 
@@ -188,7 +172,6 @@ export default function AllTickets() {
             </div>
         </div>
 
-        {/* RESULTS GRID */}
         {paginated.length > 0 ? (
             <motion.div 
                 variants={containerVariants}
@@ -203,7 +186,7 @@ export default function AllTickets() {
                         whileHover={{ y: -8 }}
                         className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-800 transition-all duration-300 flex flex-col h-full group"
                     >
-                        {/* Card Image */}
+
                         <div className="relative h-48 overflow-hidden">
                             <img 
                                 src={ticket.image || "/placeholder.jpg"} 
@@ -215,7 +198,7 @@ export default function AllTickets() {
                                     {ticket.transportType}
                                 </span>
                             </div>
-                            {/* Date Badge */}
+
                             <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur rounded-lg px-3 py-1 flex items-center gap-1 text-xs font-bold shadow-sm">
                                 <CalendarDaysIcon className="w-3 h-3 text-blue-500" />
                                 <span className="text-gray-800 dark:text-gray-200">
@@ -224,13 +207,11 @@ export default function AllTickets() {
                             </div>
                         </div>
 
-                        {/* Card Content */}
                         <div className="p-5 flex flex-col grow">
                             <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-500 transition-colors">
                                 {ticket.title}
                             </h3>
 
-                            {/* Route */}
                             <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg mb-4">
                                 <div className="flex flex-col">
                                     <span className="text-xs font-medium uppercase text-gray-400">From</span>
@@ -245,7 +226,6 @@ export default function AllTickets() {
                                 </div>
                             </div>
 
-                            {/* Perks */}
                             {ticket.perks?.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {ticket.perks.slice(0, 3).map((perk, idx) => (
@@ -261,12 +241,11 @@ export default function AllTickets() {
                                 </div>
                             )}
 
-                            {/* Footer */}
                             <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
                                 <div className="flex flex-col">
                                     <span className="text-xs text-gray-400">Price per person</span>
                                     <span className="text-2xl font-extrabold text-gray-900 dark:text-white">
-                                        ${ticket.price}
+                                        ৳{ticket.price}
                                     </span>
                                 </div>
                                 <Link to={`/ticket/${ticket._id}`}>
@@ -283,7 +262,7 @@ export default function AllTickets() {
                 ))}
             </motion.div>
         ) : (
-            /* Empty State */
+
             <motion.div 
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }}
@@ -297,7 +276,6 @@ export default function AllTickets() {
             </motion.div>
         )}
 
-        {/* PAGINATION */}
         {totalPages > 1 && (
             <div className="flex justify-center items-center gap-4 mt-12">
                 <button

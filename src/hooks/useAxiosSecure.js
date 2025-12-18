@@ -1,4 +1,3 @@
-// src/hooks/useAxiosSecure.js
 import { useEffect } from "react";
 import axios from "axios";
 import useAuth from "./useAuth";
@@ -11,7 +10,6 @@ export default function useAxiosSecure() {
   const { logout } = useAuth();
 
   useEffect(() => {
-    // REQUEST interceptor → attach JWT
     const reqInterceptor = axiosSecure.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem("mernickets_token");
@@ -23,7 +21,6 @@ export default function useAxiosSecure() {
       (error) => Promise.reject(error)
     );
 
-    // RESPONSE interceptor → handle auth errors
     const resInterceptor = axiosSecure.interceptors.response.use(
       (res) => res,
       async (error) => {

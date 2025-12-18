@@ -7,6 +7,6 @@ export default {
   plugins: [require("daisyui")],
 
   daisyui: {
-    themes: ["light", "dark"], // 🔴 THIS WAS MISSING
+    themes: ["light", "dark"],
   },
 };

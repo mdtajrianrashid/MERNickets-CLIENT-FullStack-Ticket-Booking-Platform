@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
@@ -22,7 +21,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Handle scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -36,7 +34,6 @@ export default function Navbar() {
     navigate("/");
   };
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setOpen(false);
   }, [location]);
@@ -46,13 +43,12 @@ export default function Navbar() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
           ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-gray-200 dark:border-gray-800" 
-          : "bg-transparent backdrop-blur-sm" // Slightly transparent at top
+          : "bg-transparent backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* 1. LOGO */}
           <Link
             to="/"
             className="flex items-center gap-2 group"
@@ -65,17 +61,14 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* 2. DESKTOP LINKS */}
           <div className="hidden md:flex items-center space-x-8">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/tickets">All Tickets</NavLink>
             {user && <NavLink to="dashboard">Dashboard</NavLink>}
           </div>
 
-          {/* 3. RIGHT SIDE ACTIONS */}
           <div className="flex items-center gap-4">
             
-            {/* Theme Toggle */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={toggleTheme}
@@ -84,14 +77,12 @@ export default function Navbar() {
               {theme === "dark" ? <SunIcon className="w-5 h-5"/> : <MoonIcon className="w-5 h-5"/>}
             </motion.button>
 
-            {/* Auth Buttons */}
             {user ? (
               <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
                 <div className="hidden sm:flex flex-col items-end">
                   <span className="text-sm font-semibold text-gray-800 dark:text-white">
                     {user.displayName?.split(" ")[0]}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">User</span>
                 </div>
                 
                 <div className="relative group">
@@ -100,7 +91,6 @@ export default function Navbar() {
                     alt="avatar"
                     className="w-10 h-10 rounded-full border-2 border-white dark:border-gray-800 shadow-sm object-cover"
                   />
-                  {/* Status Indicator */}
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full"></span>
                 </div>
 
@@ -131,7 +121,6 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setOpen(!open)}
               className="md:hidden p-2 text-gray-600 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -142,7 +131,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 4. MOBILE MENU (Animated) */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -180,8 +168,6 @@ export default function Navbar() {
   );
 }
 
-// --- Helper Components ---
-
 function NavLink({ to, children }) {
   return (
     <Link
@@ -189,7 +175,6 @@ function NavLink({ to, children }) {
       className="relative text-gray-600 dark:text-gray-300 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors group py-2"
     >
       {children}
-      {/* Animated Underline */}
       <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
     </Link>
   );

@@ -1,4 +1,3 @@
-// src/pages/Dashboard/MyBookings.jsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -14,7 +13,6 @@ import {
   BanknotesIcon
 } from "@heroicons/react/24/outline";
 
-/* --- 1. COUNTDOWN COMPONENT (Styled Badge) --- */
 function Countdown({ departure }) {
   const [time, setTime] = useState("");
 
@@ -27,12 +25,11 @@ function Countdown({ departure }) {
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       
-      // Format: 2d 10h 45m
       setTime(`${d}d ${h}h ${m}m`);
     };
 
-    updateTimer(); // Initial call
-    const timer = setInterval(updateTimer, 60000); // Update every minute is enough for this format
+    updateTimer();
+    const timer = setInterval(updateTimer, 60000);
     return () => clearInterval(timer);
   }, [departure]);
 
@@ -46,7 +43,6 @@ function Countdown({ departure }) {
   );
 }
 
-/* --- 2. MAIN COMPONENT --- */
 export default function MyBookings() {
   const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
@@ -59,7 +55,6 @@ export default function MyBookings() {
     });
   }, []);
 
-  // Animation Variants
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -78,7 +73,6 @@ export default function MyBookings() {
   return (
     <div className="p-6 md:p-8">
       
-      {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
@@ -95,7 +89,6 @@ export default function MyBookings() {
       </div>
 
       {bookings.length === 0 ? (
-        /* Empty State */
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -111,7 +104,6 @@ export default function MyBookings() {
           </Link>
         </motion.div>
       ) : (
-        /* Booking Grid */
         <motion.div 
           variants={container}
           initial="hidden"
@@ -120,12 +112,10 @@ export default function MyBookings() {
         >
           {bookings.map(b => {
             const t = b.ticket;
-            // Handle if ticket data is missing (e.g. deleted by admin)
             if (!t) return null; 
 
             const isFuture = new Date(t.departure) > new Date();
             
-            // Determine Status Styles
             let statusColor = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
             let statusIcon = null;
 
@@ -150,22 +140,19 @@ export default function MyBookings() {
                 whileHover={{ y: -5 }}
                 className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col h-full"
               >
-                {/* 1. Card Header (Image + Status) */}
                 <div className="relative h-48">
                   <img 
                     src={t.image || "/placeholder.jpg"} 
                     alt={t.title} 
                     className="w-full h-full object-cover" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   
-                  {/* Status Badge */}
                   <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 shadow-sm backdrop-blur-md ${statusColor}`}>
                     {statusIcon}
                     {b.status}
                   </div>
 
-                  {/* Title Overlay */}
                   <div className="absolute bottom-4 left-4 right-4 text-white">
                     <h3 className="font-bold text-lg truncate">{t.title}</h3>
                     <div className="flex items-center text-sm opacity-90">
@@ -175,10 +162,8 @@ export default function MyBookings() {
                   </div>
                 </div>
 
-                {/* 2. Card Details */}
-                <div className="p-5 flex flex-col flex-grow space-y-4">
+                <div className="p-5 flex flex-col grow space-y-4">
                   
-                  {/* Info Grid */}
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="bg-gray-50 dark:bg-gray-800 p-2.5 rounded-lg">
                       <p className="text-gray-500 dark:text-gray-400 text-xs">Departure Date</p>
@@ -196,46 +181,39 @@ export default function MyBookings() {
                     </div>
                   </div>
 
-                  {/* Conditional Countdown [cite: 136] */}
                   {(b.status === "pending" || b.status === "accepted") && isFuture && (
                      <Countdown departure={t.departure} />
                   )}
 
-                  {/* 3. Footer Action Area */}
                   <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
                     
-                    {/* CASE: Accepted & Future -> PAY NOW  */}
                     {b.status === "accepted" && isFuture && (
                       <Link
                         to={`/dashboard/user/payment/${b._id}`}
-                        className="block w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-center font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] transition-all"
+                        className="block w-full py-2.5 bg-linear-to-r from-blue-600 to-cyan-500 text-white text-center font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] transition-all"
                       >
                         Pay Now
                       </Link>
                     )}
 
-                    {/* CASE: Paid -> Receipt/Ticket */}
                     {b.status === "paid" && (
                        <button disabled className="w-full py-2.5 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold rounded-xl flex items-center justify-center gap-2 cursor-default">
                           <CheckCircleIcon className="w-5 h-5" /> Ticket Confirmed
                        </button>
                     )}
 
-                    {/* CASE: Pending -> Waiting */}
                     {b.status === "pending" && isFuture && (
                        <div className="text-center text-sm text-yellow-600 dark:text-yellow-500 font-medium bg-yellow-50 dark:bg-yellow-900/10 py-2 rounded-lg">
                           Waiting for approval...
                        </div>
                     )}
 
-                    {/* CASE: Rejected -> Error Message [cite: 143] */}
                     {b.status === "rejected" && (
                        <div className="text-center text-sm text-red-600 dark:text-red-400 font-medium">
                           Booking request rejected.
                        </div>
                     )}
 
-                    {/* CASE: Expired (Not paid & Time passed)  */}
                     {!isFuture && b.status !== "paid" && (
                        <div className="text-center text-sm text-red-500 font-medium bg-red-50 dark:bg-red-900/10 py-2 rounded-lg flex items-center justify-center gap-2">
                           <XCircleIcon className="w-4 h-4" /> Departure Passed

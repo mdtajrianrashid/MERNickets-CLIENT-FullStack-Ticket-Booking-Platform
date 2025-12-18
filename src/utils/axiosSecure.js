@@ -1,4 +1,3 @@
-// src/utils/axiosSecure.js
 import axios from "axios";
 
 const axiosSecure = axios.create({

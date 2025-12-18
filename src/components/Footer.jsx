@@ -1,4 +1,3 @@
-// src/components/Footer.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -13,7 +12,6 @@ import { TicketIcon } from "@heroicons/react/24/outline";
 
 export default function Footer() {
   
-  // Animation Variants
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -33,10 +31,8 @@ export default function Footer() {
   return (
     <footer className="relative bg-white dark:bg-gray-950 pt-20 pb-10 overflow-hidden">
       
-      {/* 1. Decorative Gradient Top Border */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
 
-      {/* 2. Background Glow Effects */}
       <div className="absolute -top-25 -left-25 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -49,7 +45,6 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
         >
 
-          {/* BRAND COLUMN */}
           <motion.div variants={item} className="space-y-6">
             <Link to="/" className="flex items-center gap-2 group w-fit">
               <div className="bg-linear-to-tr from-blue-600 to-cyan-400 p-2 rounded-xl text-white shadow-lg shadow-blue-500/30">
@@ -73,7 +68,6 @@ export default function Footer() {
             </div>
           </motion.div>
 
-          {/* QUICK LINKS */}
           <motion.div variants={item}>
             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Explore</h4>
             <ul className="space-y-4">
@@ -85,7 +79,6 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* COMPANY */}
           <motion.div variants={item}>
             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Company</h4>
             <ul className="space-y-4">
@@ -97,7 +90,6 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* CONTACT & PAYMENTS */}
           <motion.div variants={item}>
             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Contact & Payment</h4>
             <div className="space-y-4 text-gray-600 dark:text-gray-400">
@@ -124,7 +116,6 @@ export default function Footer() {
           </motion.div>
         </motion.div>
 
-        {/* BOTTOM BAR */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -144,8 +135,6 @@ export default function Footer() {
     </footer>
   );
 }
-
-// --- SUB COMPONENTS ---
 
 function FooterLink({ to, children }) {
   return (

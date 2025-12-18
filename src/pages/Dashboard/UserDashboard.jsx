@@ -1,4 +1,3 @@
-// src/pages/Dashboard/UserDashboard.jsx
 import React from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -14,7 +13,6 @@ export default function UserDashboard() {
   const { user, dbUser } = useAuth();
   const location = useLocation();
 
-  // Navigation Items Configuration
   const navItems = [
     { 
       to: "/dashboard/user", 
@@ -40,19 +38,13 @@ export default function UserDashboard() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8">
         
-        {/* =======================
-            SIDEBAR (Desktop & Mobile)
-           ======================= */}
         <aside className="md:col-span-3 lg:col-span-3">
           
-          {/* Glass Card Container */}
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-700 shadow-xl rounded-3xl overflow-hidden sticky top-24">
             
-            {/* 1. Profile Header */}
-            <div className="p-8 text-center border-b border-gray-100 dark:border-gray-800 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-900/10">
+            <div className="p-8 text-center border-b border-gray-100 dark:border-gray-800 bg-linear-to-b from-blue-50/50 to-transparent dark:from-blue-900/10">
               <div className="relative w-24 h-24 mx-auto mb-4">
-                {/* Gradient Ring */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-cyan-400 rounded-full blur opacity-70"></div>
+                <div className="absolute inset-0 bg-linear-to-tr from-blue-500 to-cyan-400 rounded-full blur opacity-70"></div>
                 <img
                   src={user?.photoURL || `https://ui-avatars.com/api/?name=${user?.displayName || "User"}&background=0D8ABC&color=fff`}
                   alt="Profile"
@@ -70,14 +62,12 @@ export default function UserDashboard() {
               </span>
             </div>
 
-            {/* 2. Navigation Links (Vertical List for Desktop) */}
             <nav className="p-4 hidden md:flex flex-col gap-2">
               {navItems.map((item) => (
                 <DashboardNavLink key={item.to} item={item} />
               ))}
             </nav>
 
-            {/* 3. Mobile Navigation (Horizontal Scroll) */}
             <div className="md:hidden border-t border-gray-100 dark:border-gray-800">
                <div className="flex overflow-x-auto gap-2 p-4 no-scrollbar">
                   {navItems.map((item) => (
@@ -89,18 +79,14 @@ export default function UserDashboard() {
           </div>
         </aside>
 
-        {/* =======================
-            MAIN CONTENT AREA
-           ======================= */}
         <main className="md:col-span-9 lg:col-span-9">
            <motion.div
              key={location.pathname}
              initial={{ opacity: 0, y: 20 }}
              animate={{ opacity: 1, y: 0 }}
              transition={{ duration: 0.4 }}
-             className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-3xl min-h-[500px] border border-transparent dark:border-gray-800"
+             className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-3xl min-h-125 border border-transparent dark:border-gray-800"
            >
-              {/* The actual page content (MyBookings, Profile, etc.) renders here */}
               <Outlet />
            </motion.div>
         </main>
@@ -110,7 +96,6 @@ export default function UserDashboard() {
   );
 }
 
-// --- SUB COMPONENT: Desktop Link ---
 function DashboardNavLink({ item }) {
   return (
     <NavLink
@@ -119,7 +104,7 @@ function DashboardNavLink({ item }) {
       className={({ isActive }) =>
         `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
           isActive
-            ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/30 translate-x-1"
+            ? "bg-linear-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/30 translate-x-1"
             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
         }`
       }
@@ -130,7 +115,6 @@ function DashboardNavLink({ item }) {
   );
 }
 
-// --- SUB COMPONENT: Mobile Link (Horizontal Pill) ---
 function DashboardNavLinkMobile({ item }) {
   return (
     <NavLink

@@ -1,8 +1,6 @@
-// src/hooks/useAuth.js
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
-// Custom hook to access auth context, including Firebase user and dbUser
 export const useAuth = () => {
   const context = useContext(AuthContext);
 

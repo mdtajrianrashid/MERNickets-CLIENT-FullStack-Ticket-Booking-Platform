@@ -1,4 +1,3 @@
-// src/pages/Dashboard/RequestedBookings.jsx
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Spinner from "../../components/Spinner";
@@ -16,7 +15,7 @@ export default function RequestedBookings() {
   const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [processingId, setProcessingId] = useState(null); // Track which item is being processed
+  const [processingId, setProcessingId] = useState(null);
 
   useEffect(() => {
     axiosSecure.get("/bookings/vendor").then(res => {
@@ -26,10 +25,9 @@ export default function RequestedBookings() {
   }, [axiosSecure]);
 
   const handleAction = async (id, action) => {
-    setProcessingId(id); // Show loading state on specific button
+    setProcessingId(id);
     try {
         await axiosSecure.patch(`/bookings/${action}/${id}`);
-        // Remove the item from list smoothly
         setBookings(bookings.filter(b => b._id !== id));
     } catch (error) {
         console.error("Action failed", error);
@@ -38,7 +36,6 @@ export default function RequestedBookings() {
     }
   };
 
-  // Animation Variants
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -58,7 +55,6 @@ export default function RequestedBookings() {
   return (
     <div className="p-6 md:p-8 space-y-8">
       
-      {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
@@ -75,7 +71,6 @@ export default function RequestedBookings() {
       </div>
 
       {bookings.length === 0 ? (
-        /* Empty State */
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -88,7 +83,6 @@ export default function RequestedBookings() {
           <p className="text-gray-500 dark:text-gray-400 mt-2">No new booking requests at the moment.</p>
         </motion.div>
       ) : (
-        /* Requests Table */
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -131,7 +125,6 @@ export default function RequestedBookings() {
                         </div>
                       </td>
                       
-                      {/* Ticket Column */}
                       <td className="px-6 py-4">
                          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                             <TicketIcon className="w-4 h-4 text-gray-400" />
@@ -139,24 +132,20 @@ export default function RequestedBookings() {
                          </div>
                       </td>
                       
-                      {/* Quantity Column */}
                       <td className="px-6 py-4">
                          <span className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-1 px-3 rounded-md text-xs font-bold">
                             x{b.quantity}
                          </span>
                       </td>
                       
-                      {/* Total Price Column */}
                       <td className="px-6 py-4">
                          <span className="text-lg font-bold text-gray-900 dark:text-white">
                             ${b.totalPrice}
                          </span>
                       </td>
 
-                      {/* Actions Column */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-3">
-                            {/* Reject Button */}
                             <button
                                 onClick={() => handleAction(b._id, "reject")}
                                 disabled={processingId === b._id}
@@ -166,7 +155,6 @@ export default function RequestedBookings() {
                                 Reject
                             </button>
 
-                            {/* Accept Button */}
                             <button
                                 onClick={() => handleAction(b._id, "accept")}
                                 disabled={processingId === b._id}

@@ -1,4 +1,3 @@
-// src/pages/TicketDetails/TicketDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axiosPublic from "../../utils/axiosPublic";
@@ -17,7 +16,6 @@ import {
   CheckBadgeIcon
 } from "@heroicons/react/24/outline";
 
-/* --- 1. COUNTDOWN COMPONENT (Modern Digital Look) --- */
 function Countdown({ target }) {
   const [time, setTime] = useState(null);
 
@@ -57,22 +55,18 @@ function Countdown({ target }) {
   );
 }
 
-/* --- 2. MAIN COMPONENT --- */
 export default function TicketDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-
   const [ticket, setTicket] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // Booking State
   const [quantity, setQuantity] = useState(1);
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // Step 1: Confirm details
-  const [showSuccessModal, setShowSuccessModal] = useState(false); // Step 2: Success message
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -91,13 +85,11 @@ export default function TicketDetails() {
   const canBook = !isDeparturePassed && !soldOut;
 
   const handleBooking = async () => {
-    // Auth Check
     if (!user) {
       navigate("/login", { state: { from: location } });
       return;
     }
     
-    // Validate Quantity
     if (quantity < 1 || quantity > ticket.ticketQuantity) {
         alert("Invalid quantity");
         return;
@@ -107,7 +99,6 @@ export default function TicketDetails() {
     try {
       await axiosSecure.post("/bookings", { ticketId: ticket._id, quantity });
       
-      // Close Confirm Modal -> Open Success Modal
       setShowConfirmModal(false);
       setShowSuccessModal(true); 
 
@@ -121,19 +112,17 @@ export default function TicketDetails() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 px-4 transition-colors duration-300 relative">
       
-      {/* Background Decor */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-50/50 dark:bg-blue-900/10 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-start relative z-10">
         
-        {/* LEFT: Image & Countdown */}
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="space-y-8"
         >
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] group">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-4/3 group">
             <img 
               src={ticket.image || "/placeholder.jpg"} 
               alt={ticket.title} 
@@ -144,7 +133,6 @@ export default function TicketDetails() {
             </div>
           </div>
 
-          {/* Countdown Section */}
           <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800">
             <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
               <ClockIcon className="w-5 h-5" /> Time Until Departure
@@ -153,7 +141,6 @@ export default function TicketDetails() {
           </div>
         </motion.div>
 
-        {/* RIGHT: Ticket Info */}
         <motion.div 
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -163,7 +150,6 @@ export default function TicketDetails() {
             {ticket.title}
           </h1>
 
-          {/* Route Box */}
           <div className="flex items-center gap-4 text-lg text-gray-600 dark:text-gray-300 mb-8 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-fit">
              <MapPinIcon className="w-6 h-6 text-blue-500" />
              <span className="font-semibold">{ticket.from}</span>
@@ -189,7 +175,6 @@ export default function TicketDetails() {
              </div>
           </div>
 
-          {/* Perks Grid */}
           {ticket.perks?.length > 0 && (
             <div className="mt-8">
               <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Included Perks</h3>
@@ -203,7 +188,6 @@ export default function TicketDetails() {
             </div>
           )}
 
-          {/* Footer Action */}
           <div className="mt-10 border-t border-gray-200 dark:border-gray-800 pt-8 flex items-center justify-between">
             <div>
                <p className="text-sm text-gray-400">Total Price</p>
@@ -213,7 +197,7 @@ export default function TicketDetails() {
             <button
               onClick={() => setShowConfirmModal(true)}
               disabled={!canBook}
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="px-8 py-4 bg-linear-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isDeparturePassed ? "Departure Passed" : soldOut ? "Sold Out" : "Book Now"}
             </button>
@@ -221,10 +205,8 @@ export default function TicketDetails() {
         </motion.div>
       </div>
 
-      {/* --- MODALS --- */}
       <AnimatePresence>
         
-        {/* 1. CONFIRMATION MODAL */}
         {showConfirmModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <motion.div
@@ -269,7 +251,6 @@ export default function TicketDetails() {
           </div>
         )}
 
-        {/* 2. SUCCESS MODAL (Your New Requirement) */}
         {showSuccessModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <motion.div
@@ -288,7 +269,7 @@ export default function TicketDetails() {
               </p>
 
               <button
-                onClick={() => navigate("/dashboard/user")} // Updated path to match user flow
+                onClick={() => navigate("/dashboard/user")}
                 className="w-full py-3.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:opacity-90 transition-opacity"
               >
                 Go to Dashboard

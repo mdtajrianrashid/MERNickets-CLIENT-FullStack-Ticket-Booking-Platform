@@ -1,4 +1,3 @@
-// src/pages/Dashboard/AddTicket.jsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -33,7 +32,7 @@ export default function AddTicket() {
     ticketQuantity: "",
     departure: "",
     image: "",
-    perks: ["", "", "", "", "", "", ""], // ✅ 7 perks preserved
+    perks: ["", "", "", "", "", "", ""],
   });
 
   useEffect(() => {
@@ -47,7 +46,7 @@ export default function AddTicket() {
         });
       });
     }
-  }, [id]);
+  }, [axiosSecure, id, isEdit]);
 
   const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -84,7 +83,6 @@ export default function AddTicket() {
   return (
     <div className="max-w-4xl mx-auto p-2">
       
-      {/* Page Header */}
       <div className="mb-8 flex items-center gap-3">
         <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-2xl text-purple-600 dark:text-purple-400">
           {isEdit ? <PencilSquareIcon className="w-8 h-8" /> : <PlusCircleIcon className="w-8 h-8" />}
@@ -107,14 +105,12 @@ export default function AddTicket() {
       >
         <form onSubmit={handleSubmit} className="space-y-8">
           
-          {/* Section 1: Basic Info */}
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">
               Journey Information
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Title */}
               <div className="md:col-span-2 space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Ticket Title</label>
                 <div className="relative group">
@@ -130,7 +126,6 @@ export default function AddTicket() {
                 </div>
               </div>
 
-              {/* From */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Origin (From)</label>
                 <div className="relative group">
@@ -146,7 +141,6 @@ export default function AddTicket() {
                 </div>
               </div>
 
-              {/* To */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Destination (To)</label>
                 <div className="relative group">
@@ -162,7 +156,6 @@ export default function AddTicket() {
                 </div>
               </div>
 
-              {/* Transport Type */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Transport Mode</label>
                 <div className="relative group">
@@ -178,7 +171,6 @@ export default function AddTicket() {
                 </div>
               </div>
 
-              {/* Departure */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Departure Time</label>
                 <div className="relative group">
@@ -188,21 +180,19 @@ export default function AddTicket() {
                     required 
                     value={form.departure} 
                     onChange={handleChange} 
-                    className="w-full pl-4 pr-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all dark:text-white dark:[color-scheme:dark]" 
+                    className="w-full pl-4 pr-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all dark:text-white dark:scheme-dark" 
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Section 2: Pricing & Media */}
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">
               Pricing & Assets
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Price */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Price per Ticket</label>
                 <div className="relative group">
@@ -218,7 +208,6 @@ export default function AddTicket() {
                 </div>
               </div>
 
-              {/* Quantity */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Total Seats</label>
                 <div className="relative group">
@@ -234,7 +223,6 @@ export default function AddTicket() {
                 </div>
               </div>
 
-              {/* Image URL */}
               <div className="md:col-span-3 space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Cover Image URL</label>
                 <div className="relative group">
@@ -251,7 +239,6 @@ export default function AddTicket() {
             </div>
           </div>
 
-          {/* Section 3: Perks */}
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
               <StarIcon className="w-5 h-5 text-yellow-500" /> Included Perks (7 Slots)
@@ -274,12 +261,11 @@ export default function AddTicket() {
             </div>
           </div>
 
-          {/* Submit Button */}
           <div className="pt-4">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-bold text-lg rounded-xl shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-linear-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-bold text-lg rounded-xl shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

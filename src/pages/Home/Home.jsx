@@ -1,24 +1,20 @@
-// src/pages/Home/Home.jsx
 import React, { useEffect, useState } from "react";
 import axiosPublic from "../../utils/axiosPublic";
 import Spinner from "../../components/Spinner";
 import { Link, useNavigate } from "react-router-dom";
-// import heroVidoe from "../../assets/Top 10 Most Beautiful Places On Earth _ Travel Video.mp4";
-import { motion } from "framer-motion"; // Import Framer Motion
+import heroVideo from "../../assets/heroVideo.mp4";
+import { motion } from "framer-motion";
 import { MapPinIcon, CalendarDaysIcon, TicketIcon, ShieldCheckIcon, GlobeAltIcon, BoltIcon, StarIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
-  // --- EXISTING STATE & LOGIC (UNTOUCHED) ---
+
   const [advertised, setAdvertised] = useState([]);
   const [latest, setLatest] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // search state
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [transport, setTransport] = useState("");
   const [date, setDate] = useState("");
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +31,7 @@ export default function Home() {
       })
       .finally(() => setLoading(false));
   }, []);
-
+  
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (from) params.set("from", from);
@@ -46,8 +42,6 @@ export default function Home() {
   };
 
   if (loading) return <Spinner />;
-
-  // --- ANIMATION VARIANTS ---
   const fadeIn = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -66,16 +60,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
       
-      {/* 1. HERO SECTION */}
+      {/* HERO SECTION */}
       <section className="relative h-[85vh] w-full overflow-hidden">
         <video
-          // src={heroVidoe}
+          src={heroVideo}
           autoPlay
           loop
           muted
           className="absolute top-0 left-0 w-full h-full object-cover"
         />
-        {/* Dark Overlay with Gradient */}
+
         <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/20 to-gray-50 dark:to-gray-950" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
@@ -101,7 +95,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. GLASSMORPHISM SEARCH PANEL */}
       <div className="relative z-20 -mt-24 px-4">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -111,7 +104,6 @@ export default function Home() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
             
-            {/* From Input */}
             <div className="relative group">
               <MapPinIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               <input 
@@ -122,7 +114,6 @@ export default function Home() {
               />
             </div>
 
-            {/* To Input */}
             <div className="relative group">
               <MapPinIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               <input 
@@ -133,7 +124,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Transport Select */}
             <div className="relative group">
               <TicketIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               <select 
@@ -149,9 +139,7 @@ export default function Home() {
               </select>
             </div>
 
-            {/* Date Input */}
             <div className="relative group">
-              {/* <CalendarDaysIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" /> */}
               <input 
                 type="date" 
                 className="w-full pl-4 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white dark:scheme-dark" 
@@ -160,7 +148,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Search Button */}
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
@@ -175,19 +162,16 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 pb-20 mt-16">
         
-        {/* 3. ADVERTISEMENT SECTION */}
         {advertised.length > 0 && (
           <Section title="Featured Promotions" icon={<StarIcon className="h-6 w-6 text-yellow-500"/>}>
             {advertised.map(t => <TicketCard key={t._id} ticket={t} />)}
           </Section>
         )}
 
-        {/* 4. LATEST TICKETS */}
         <Section title="Latest Arrivals" icon={<BoltIcon className="h-6 w-6 text-blue-500"/>}>
           {latest.map(t => <TicketCard key={t._id} ticket={t} />)}
         </Section>
 
-        {/* 5. POPULAR ROUTES */}
         <section>
           <motion.div 
             initial="hidden"
@@ -201,7 +185,7 @@ export default function Home() {
           </motion.div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {["Dhaka → Sylhet", "London → Manchester", "New York → Boston", "Paris → Lyon"].map((r, index) => (
+            {["Dhaka → Sylhet", "Sylhet → London", "Dhaka → Dubai", "Sylhet → Cox's Bazar"].map((r, index) => (
               <motion.div 
                 key={r}
                 initial={{ opacity: 0, y: 20 }}
@@ -222,9 +206,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 6. WHY CHOOSE US */}
         <section className="bg-blue-50 dark:bg-gray-900/50 rounded-3xl p-8 md:p-16 relative overflow-hidden">
-          {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200/20 dark:bg-blue-900/20 rounded-full blur-3xl -z-10" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-200/20 dark:bg-cyan-900/20 rounded-full blur-3xl -z-10" />
           
@@ -245,8 +227,6 @@ export default function Home() {
     </div>
   );
 }
-
-// --- SUB COMPONENTS FOR CLEANER CODE ---
 
 function Section({ title, icon, children }) {
   const container = {
@@ -288,7 +268,7 @@ function TicketCard({ ticket }) {
       whileHover={{ y: -8, transition: { duration: 0.2 } }}
       className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 group flex flex-col h-full"
     >
-      {/* Image Container */}
+
       <div className="relative h-48 overflow-hidden">
         <img 
           src={ticket.image || "/placeholder.jpg"} 
@@ -300,7 +280,6 @@ function TicketCard({ ticket }) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-5 flex flex-col grow">
         <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">{ticket.title}</h3>
         
@@ -313,9 +292,9 @@ function TicketCard({ ticket }) {
         <div className="mt-auto flex items-center justify-between">
           <div>
             <span className="text-xs text-gray-500 dark:text-gray-400 block">Price</span>
-            <span className="text-xl font-bold text-blue-600 dark:text-blue-400">${ticket.price}</span>
+            <span className="text-xl font-bold text-blue-600 dark:text-blue-400">৳{ticket.price}</span>
           </div>
-          <Link to={`/ticket/${ticket._id}`}>
+          <Link to={`/ticket/৳{ticket._id}`}>
             <motion.button 
               whileTap={{ scale: 0.9 }}
               className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"

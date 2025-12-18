@@ -1,4 +1,3 @@
-// src/pages/Payment/PaymentForm.jsx (or wherever you use it)
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../hooks/useAxiosSecure";
@@ -25,9 +24,6 @@ export default function PaymentForm({ bookingId }) {
   const [success, setSuccess] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
-  /* ============================
-      Create Payment Intent
-  ============================ */
   useEffect(() => {
     if(!bookingId) return;
     
@@ -45,9 +41,6 @@ export default function PaymentForm({ bookingId }) {
       });
   }, [bookingId, axiosSecure]);
 
-  /* ============================
-      Handle Payment
-  ============================ */
   const handleSubmit = async e => {
     e.preventDefault();
     setError("");
@@ -89,32 +82,23 @@ export default function PaymentForm({ bookingId }) {
     setProcessing(false);
   };
 
-  /* ============================
-      Stripe Element Styling
-  ============================ */
-  // Custom styling to make the iframe match the theme
   const cardStyle = {
     style: {
       base: {
         fontSize: "16px",
-        color: "#1f2937", // Gray-900
+        color: "#1f2937",
         fontFamily: "'Inter', sans-serif",
         "::placeholder": {
-          color: "#9ca3af", // Gray-400
+          color: "#9ca3af",
         },
       },
       invalid: {
-        color: "#ef4444", // Red-500
+        color: "#ef4444",
       },
     },
   };
 
-  // While fetching the intent
   if (loadingData) return <div className="h-64 flex items-center justify-center"><Spinner /></div>;
-
-  /* ============================
-      SUCCESS VIEW
-  ============================ */
   if (success) {
     return (
       <motion.div 
@@ -134,7 +118,7 @@ export default function PaymentForm({ bookingId }) {
         </p>
 
         <button
-          className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all"
+          className="w-full py-3 bg-linear-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all"
           onClick={() => navigate("/dashboard/user/transactions")}
         >
           See Receipt
@@ -143,16 +127,12 @@ export default function PaymentForm({ bookingId }) {
     );
   }
 
-  /* ============================
-      PAYMENT FORM
-  ============================ */
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="max-w-md mx-auto bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700 overflow-hidden"
     >
-      {/* Header */}
       <div className="bg-gray-50 dark:bg-gray-800/50 p-6 border-b border-gray-100 dark:border-gray-700 text-center">
          <div className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">
             <LockClosedIcon className="w-4 h-4" /> Secure Checkout
@@ -167,19 +147,16 @@ export default function PaymentForm({ bookingId }) {
 
       <form onSubmit={handleSubmit} className="p-8 space-y-6">
         
-        {/* Card Input Wrapper */}
         <div className="space-y-2">
            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1 flex items-center gap-2">
               <CreditCardIcon className="w-4 h-4" /> Card Details
            </label>
            
            <div className="p-4 bg-gray-50 dark:bg-gray-100 rounded-xl border border-gray-200 dark:border-gray-600 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-              {/* Note: CardElement works best with light backgrounds for contrast consistency */}
               <CardElement options={cardStyle} />
            </div>
         </div>
 
-        {/* Error Message */}
         <AnimatePresence>
           {error && (
             <motion.div 
@@ -188,20 +165,19 @@ export default function PaymentForm({ bookingId }) {
               exit={{ opacity: 0, height: 0 }}
               className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm p-3 rounded-lg flex items-start gap-2"
             >
-               <ShieldCheckIcon className="w-5 h-5 flex-shrink-0" />
+               <ShieldCheckIcon className="w-5 h-5 shrink-0" />
                <span>{error}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Submit Button */}
         <button
-          className="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-4 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           disabled={!stripe || !clientSecret || processing}
         >
           {processing ? (
              <>
-               <Spinner className="w-5 h-5 !p-0 border-white border-t-transparent" />
+               <Spinner className="w-5 h-5 p-0! border-white border-t-transparent" />
                Processing...
              </>
           ) : (

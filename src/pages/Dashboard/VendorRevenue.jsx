@@ -1,4 +1,3 @@
-// src/pages/Dashboard/VendorRevenue.jsx
 import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Spinner from "../../components/Spinner";
@@ -35,13 +34,10 @@ export default function VendorRevenue() {
 
   if (!stats) return <Spinner className="h-[60vh]" />;
 
-  /* =========================
-      Chart Data Preparation
-  ========================= */
   const barData = [
-    { name: "Revenue", value: stats.revenue, fill: "#8b5cf6" }, // Purple
-    { name: "Sold", value: stats.ticketsSold, fill: "#3b82f6" },   // Blue
-    { name: "Total", value: stats.ticketsAdded, fill: "#10b981" }, // Emerald
+    { name: "Revenue", value: stats.revenue, fill: "#8b5cf6" },
+    { name: "Sold", value: stats.ticketsSold, fill: "#3b82f6" },
+    { name: "Total", value: stats.ticketsAdded, fill: "#10b981" },
   ];
 
   const pieData = [
@@ -49,10 +45,8 @@ export default function VendorRevenue() {
     { name: "Available", value: Math.max(0, stats.ticketsAdded - stats.ticketsSold) },
   ];
 
-  const PIE_COLORS = ["#3b82f6", "#e5e7eb"]; // Blue vs Gray
-  const PIE_COLORS_DARK = ["#60a5fa", "#374151"]; // Lighter Blue vs Dark Gray
-
-  // Animation Variants
+  const PIE_COLORS = ["#3b82f6", "#e5e7eb"];
+  const PIE_COLORS_DARK = ["#60a5fa", "#374151"];
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -69,13 +63,11 @@ export default function VendorRevenue() {
   return (
     <div className="space-y-8 p-1">
       
-      {/* Page Header */}
       <div className="flex items-center gap-3 mb-6">
         <PresentationChartLineIcon className="w-8 h-8 text-purple-600 dark:text-purple-400" />
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Revenue Overview</h2>
       </div>
 
-      {/* ===== Summary Cards ===== */}
       <motion.div 
         variants={container}
         initial="hidden"
@@ -105,10 +97,8 @@ export default function VendorRevenue() {
         />
       </motion.div>
 
-      {/* ===== Charts Section ===== */}
       <div className="grid lg:grid-cols-2 gap-8">
         
-        {/* Bar Chart Card */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -119,7 +109,7 @@ export default function VendorRevenue() {
             <ChartBarIcon className="w-5 h-5 text-gray-400" /> Performance Metrics
           </h3>
           
-          <div className="h-[300px] w-full">
+          <div className="h-75 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" opacity={0.3} />
@@ -151,7 +141,6 @@ export default function VendorRevenue() {
           </div>
         </motion.div>
 
-        {/* Pie Chart Card */}
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -162,7 +151,7 @@ export default function VendorRevenue() {
              <TicketIcon className="w-5 h-5 text-gray-400" /> Sales Ratio
           </h3>
 
-          <div className="h-[300px] w-full relative">
+          <div className="h-75 w-full relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -193,7 +182,6 @@ export default function VendorRevenue() {
               </PieChart>
             </ResponsiveContainer>
             
-            {/* Center Text Overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-8">
                <div className="text-center">
                   <span className="block text-3xl font-bold text-gray-800 dark:text-white">
@@ -209,15 +197,13 @@ export default function VendorRevenue() {
   );
 }
 
-/* --- Sub-Components --- */
-
 function StatCard({ title, value, icon, gradient, delay }) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className={`relative overflow-hidden rounded-3xl p-6 shadow-lg bg-gradient-to-br ${gradient} text-white`}
+      className={`relative overflow-hidden rounded-3xl p-6 shadow-lg bg-linear-to-br ${gradient} text-white`}
     >
       <div className="relative z-10 flex items-center justify-between">
         <div>
@@ -229,7 +215,6 @@ function StatCard({ title, value, icon, gradient, delay }) {
         </div>
       </div>
       
-      {/* Decorative Circles */}
       <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
       <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
     </motion.div>

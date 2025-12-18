@@ -1,4 +1,3 @@
-// src/pages/Auth/Register.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -17,35 +16,29 @@ import {
 
 export default function Register() {
   const { register } = useAuth();
-  
-  // State
   const [name, setName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(""); // Local error state for better UI feedback
-
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  // Password Validation Logic [cite: 66]
   const validatePassword = (p) => {
-    if (p.length < 6) return "Password must be at least 6 characters"; // [cite: 70]
-    if (!/[A-Z]/.test(p)) return "Must contain an uppercase letter"; // [cite: 68]
-    if (!/[a-z]/.test(p)) return "Must contain a lowercase letter"; // [cite: 69]
+    if (p.length < 6) return "Password must be at least 6 characters";
+    if (!/[A-Z]/.test(p)) return "Must contain an uppercase letter";
+    if (!/[a-z]/.test(p)) return "Must contain a lowercase letter";
     return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
-
-    // 1. Validate Password
+    setError("");
     const passwordError = validatePassword(password);
+
     if (passwordError) {
-      setError(passwordError); // Show error in UI
-      return; // Stop execution 
+      setError(passwordError);
+      return;
     }
 
     const location = useLocation();
@@ -62,13 +55,11 @@ export default function Register() {
     }
   };
 
-  // Full page loading spinner
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><Spinner /></div>;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12 relative overflow-hidden transition-colors duration-300">
       
-      {/* Background Decor (Blobs) */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten opacity-70 animate-blob"></div>
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten opacity-70 animate-blob animation-delay-2000"></div>
 
@@ -80,7 +71,6 @@ export default function Register() {
       >
         <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-white/20 dark:border-gray-700">
           
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-tr from-blue-600 to-cyan-400 text-white mb-4 shadow-lg shadow-blue-500/30">
               <TicketIcon className="w-6 h-6" />
@@ -91,7 +81,6 @@ export default function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             
-            {/* Name Input */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Full Name</label>
               <div className="relative group">
@@ -109,7 +98,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Photo URL Input */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Photo URL <span className="text-xs text-gray-400 font-normal">(Optional)</span></label>
               <div className="relative group">
@@ -126,7 +114,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Email Input */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Email Address</label>
               <div className="relative group">
@@ -144,7 +131,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Password Input */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Password</label>
               <div className="relative group">
@@ -161,7 +147,7 @@ export default function Register() {
                   value={password}
                   onChange={e=>setPassword(e.target.value)}
                 />
-                 {/* Toggle Button */}
+
                  <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -171,12 +157,10 @@ export default function Register() {
                 </button>
               </div>
 
-              {/* Validation Requirements Help Text */}
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
                 Must contain 1 uppercase, 1 lowercase & min 6 chars.
               </p>
 
-              {/* Error Message Display */}
               {error && (
                 <motion.p 
                   initial={{ opacity: 0, height: 0 }}
@@ -188,7 +172,6 @@ export default function Register() {
               )}
             </div>
 
-            {/* Register Button */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -199,7 +182,6 @@ export default function Register() {
               {loading ? "Creating Account..." : "Register"}
             </motion.button>
 
-            {/* Login Link */}
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{" "}

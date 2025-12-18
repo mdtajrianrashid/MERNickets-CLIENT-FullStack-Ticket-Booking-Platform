@@ -1,4 +1,3 @@
-// src/pages/Auth/Login.jsx
 import React, { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -17,13 +16,11 @@ export default function Login() {
   const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for toggle
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -54,7 +51,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12 relative overflow-hidden transition-colors duration-300">
       
-      {/* Background Decor */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten opacity-70 animate-blob"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten opacity-70 animate-blob animation-delay-2000"></div>
 
@@ -76,7 +72,6 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Email Input */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Email Address</label>
               <div className="relative group">
@@ -94,7 +89,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Password Input (Updated) */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Password</label>
               <div className="relative group">
@@ -103,7 +97,7 @@ export default function Login() {
                 </div>
                 
                 <input
-                  type={showPassword ? "text" : "password"} // Dynamic Type
+                  type={showPassword ? "text" : "password"}
                   required
                   className="block w-full pl-10 pr-10 py-3 border border-gray-200 dark:border-gray-700 rounded-xl leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all sm:text-sm"
                   placeholder="••••••••"
@@ -111,7 +105,6 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
 
-                {/* Toggle Button */}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -126,7 +119,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Login Button */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
