@@ -2,79 +2,352 @@
 import React, { useEffect, useState } from "react";
 import axiosPublic from "../../utils/axiosPublic";
 import Spinner from "../../components/Spinner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import heroVidoe from "../../assets/Top 10 Most Beautiful Places On Earth _ Travel Video.mp4";
+import { motion } from "framer-motion"; // Import Framer Motion
+import { MapPinIcon, CalendarDaysIcon, TicketIcon, ShieldCheckIcon, GlobeAltIcon, BoltIcon, StarIcon } from "@heroicons/react/24/outline";
 
-export default function Home(){
+export default function Home() {
+  // --- EXISTING STATE & LOGIC (UNTOUCHED) ---
   const [advertised, setAdvertised] = useState([]);
   const [latest, setLatest] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    setLoading(true);
+  // search state
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [transport, setTransport] = useState("");
+  const [date, setDate] = useState("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
     axiosPublic.get("/tickets")
       .then(res => {
         const all = res.data || [];
-        setAdvertised(all.filter(t => t.advertised).slice(0,6));
-        // Latest: sort by createdAt or date field if present
-        const sorted = all.slice().sort((a,b)=> new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
-        setLatest(sorted.slice(0,8));
+        setAdvertised(all.filter(t => t.advertised).slice(0, 6));
+        setLatest(
+          all
+            .slice()
+            .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+            .slice(0, 8)
+        );
       })
-      .catch(console.error)
-      .finally(()=>setLoading(false));
-  },[]);
+      .finally(() => setLoading(false));
+  }, []);
 
-  if(loading) return <Spinner />;
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
+    if (transport) params.set("transport", transport);
+    if (date) params.set("date", date);
+    navigate(`/tickets?${params.toString()}`);
+  };
+
+  if (loading) return <Spinner />;
+
+  // --- ANIMATION VARIANTS ---
+  const fadeIn = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  };
+
+  const containerStagger = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   return (
-    <div className="container mx-auto">
-      <section className="hero py-8">
-        <div className="grid md:grid-cols-2 gap-6 items-center">
-          <div>
-            <h1 className="text-4xl font-bold">Find & Book Your Next Journey</h1>
-            <p className="mt-3 text-lg">Search bus, train, launch & flight tickets. Fast, secure, and reliable.</p>
-            <div className="mt-4 flex gap-2">
-              <Link to="/tickets" className="btn">Browse Tickets</Link>
-            </div>
-          </div>
-          <div>
-            <img src="/hero.jpg" alt="hero" className="w-full rounded shadow" />
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
+      
+      {/* 1. HERO SECTION */}
+      <section className="relative h-[85vh] w-full overflow-hidden">
+        <video
+          src={heroVidoe}
+          autoPlay
+          loop
+          muted
+          className="absolute top-0 left-0 w-full h-full object-cover"
+        />
+        {/* Dark Overlay with Gradient */}
+        <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/20 to-gray-50 dark:to-gray-950" />
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <motion.h1 
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-lg tracking-tight mb-4"
+          >
+            Explore the World <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-500">
+              One Ticket at a Time
+            </span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="text-gray-200 text-lg md:text-xl max-w-2xl mb-8"
+          >
+            Book Bus, Train, Launch, and Flight tickets instantly with TicketBari.
+          </motion.p>
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-2xl font-semibold mb-4">Advertisement</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {advertised.map(t => (
-            <div key={t._id} className="card p-3">
-              <img src={t.image || "/placeholder.jpg"} alt={t.title} className="w-full h-44 object-cover mb-2"/>
-              <h3 className="font-semibold">{t.title}</h3>
-              <p className="text-sm">{t.from} → {t.to}</p>
-              <div className="flex justify-between items-center mt-2">
-                <div className="font-bold">${t.price}</div>
-                <Link to={`/ticket/${t._id}`} className="btn">See details</Link>
-              </div>
+      {/* 2. GLASSMORPHISM SEARCH PANEL */}
+      <div className="relative z-20 -mt-24 px-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-5xl mx-auto bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl rounded-3xl p-6 border border-white/20 dark:border-gray-700/50"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+            
+            {/* From Input */}
+            <div className="relative group">
+              <MapPinIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+              <input 
+                className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" 
+                placeholder="From City" 
+                value={from} 
+                onChange={e=>setFrom(e.target.value)} 
+              />
             </div>
-          ))}
-        </div>
-      </section>
 
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold mb-4">Latest Tickets</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {latest.map(t => (
-            <div key={t._id} className="card p-3">
-              <img src={t.image || "/placeholder.jpg"} alt={t.title} className="w-full h-36 object-cover mb-2" />
-              <h3 className="font-semibold">{t.title}</h3>
-              <p className="text-sm">{t.from} → {t.to}</p>
-              <div className="flex justify-between items-center mt-2">
-                <div className="font-bold">${t.price}</div>
-                <Link to={`/ticket/${t._id}`} className="btn">Details</Link>
-              </div>
+            {/* To Input */}
+            <div className="relative group">
+              <MapPinIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+              <input 
+                className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" 
+                placeholder="To Destination" 
+                value={to} 
+                onChange={e=>setTo(e.target.value)} 
+              />
             </div>
-          ))}
-        </div>
-      </section>
+
+            {/* Transport Select */}
+            <div className="relative group">
+              <TicketIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+              <select 
+                className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer dark:text-white"
+                value={transport} 
+                onChange={e=>setTransport(e.target.value)}
+              >
+                <option value="">Any Transport</option>
+                <option value="bus">Bus</option>
+                <option value="train">Train</option>
+                <option value="launch">Launch</option>
+                <option value="plane">Plane</option>
+              </select>
+            </div>
+
+            {/* Date Input */}
+            <div className="relative group">
+              {/* <CalendarDaysIcon className="h-5 w-5 absolute left-3 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" /> */}
+              <input 
+                type="date" 
+                className="w-full pl-4 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white dark:scheme-dark" 
+                value={date} 
+                onChange={e=>setDate(e.target.value)} 
+              />
+            </div>
+
+            {/* Search Button */}
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSearch} 
+              className="w-full py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
+            >
+              Search Tickets
+            </motion.button>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 pb-20 mt-16">
+        
+        {/* 3. ADVERTISEMENT SECTION */}
+        {advertised.length > 0 && (
+          <Section title="Featured Promotions" icon={<StarIcon className="h-6 w-6 text-yellow-500"/>}>
+            {advertised.map(t => <TicketCard key={t._id} ticket={t} />)}
+          </Section>
+        )}
+
+        {/* 4. LATEST TICKETS */}
+        <Section title="Latest Arrivals" icon={<BoltIcon className="h-6 w-6 text-blue-500"/>}>
+          {latest.map(t => <TicketCard key={t._id} ticket={t} />)}
+        </Section>
+
+        {/* 5. POPULAR ROUTES */}
+        <section>
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeIn}
+            className="text-center mb-10"
+          >
+            <h2 className="text-3xl font-bold dark:text-white">Popular Routes</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">Most traveled destinations this month</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {["Dhaka → Sylhet", "London → Manchester", "New York → Boston", "Paris → Lyon"].map((r, index) => (
+              <motion.div 
+                key={r}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 dark:border-gray-700 transition-all cursor-pointer group"
+              >
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                    🚏
+                  </div>
+                  <h3 className="font-semibold text-lg dark:text-white group-hover:text-blue-500 transition-colors">{r}</h3>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* 6. WHY CHOOSE US */}
+        <section className="bg-blue-50 dark:bg-gray-900/50 rounded-3xl p-8 md:p-16 relative overflow-hidden">
+          {/* Decorative blobs */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200/20 dark:bg-blue-900/20 rounded-full blur-3xl -z-10" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-200/20 dark:bg-cyan-900/20 rounded-full blur-3xl -z-10" />
+          
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold dark:text-white mb-4">Why Choose TicketBari?</h2>
+            <p className="text-gray-600 dark:text-gray-400">We make your journey comfortable and safe</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+             <FeatureCard icon={<ShieldCheckIcon className="w-8 h-8"/>} title="Secure Payments" desc="100% protected transactions" />
+             <FeatureCard icon={<BadgeCheckIcon className="w-8 h-8"/>} title="Verified Vendors" desc="Trusted travel partners only" />
+             <FeatureCard icon={<BoltIcon className="w-8 h-8"/>} title="Instant Booking" desc="Get your ticket in seconds" />
+             <FeatureCard icon={<GlobeAltIcon className="w-8 h-8"/>} title="Global Routes" desc="Travel anywhere with us" />
+          </div>
+        </section>
+
+      </div>
     </div>
   );
+}
+
+// --- SUB COMPONENTS FOR CLEANER CODE ---
+
+function Section({ title, icon, children }) {
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  return (
+    <section>
+      <div className="flex items-center gap-2 mb-8">
+        {icon}
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h2>
+      </div>
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {children}
+      </motion.div>
+    </section>
+  );
+}
+
+function TicketCard({ ticket }) {
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <motion.div 
+      variants={item}
+      whileHover={{ y: -8, transition: { duration: 0.2 } }}
+      className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 group flex flex-col h-full"
+    >
+      {/* Image Container */}
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={ticket.image || "/placeholder.jpg"} 
+          alt={ticket.title}
+          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" 
+        />
+        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase">
+          {ticket.transport || "Travel"}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex flex-col grow">
+        <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">{ticket.title}</h3>
+        
+        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+           <span className="truncate max-w-[45%]">{ticket.from}</span>
+           <span className="mx-2">→</span>
+           <span className="truncate max-w-[45%]">{ticket.to}</span>
+        </div>
+
+        <div className="mt-auto flex items-center justify-between">
+          <div>
+            <span className="text-xs text-gray-500 dark:text-gray-400 block">Price</span>
+            <span className="text-xl font-bold text-blue-600 dark:text-blue-400">${ticket.price}</span>
+          </div>
+          <Link to={`/ticket/${ticket._id}`}>
+            <motion.button 
+              whileTap={{ scale: 0.9 }}
+              className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              See Details
+            </motion.button>
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function FeatureCard({ icon, title, desc }) {
+    return (
+        <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm text-center border border-gray-100 dark:border-gray-700"
+        >
+            <div className="w-14 h-14 mx-auto bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-4">
+                {icon}
+            </div>
+            <h3 className="font-bold text-lg dark:text-white mb-2">{title}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{desc}</p>
+        </motion.div>
+    )
+}
+
+function BadgeCheckIcon({className}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+    )
 }

@@ -1,0 +1,19 @@
+[33mc8bb001[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: reset: moving to HEAD~2
+[33m8f60aa6[m HEAD@{1}: commit: Added Light mode/Dark mode toggle
+[33m1f57f3e[m HEAD@{2}: commit: Added Light mode/Dark mode toggle
+[33mc8bb001[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{3}: commit: All Functionality Complete
+[33mb17b58c[m HEAD@{4}: commit: All functions complete, vendor profile name not showing
+[33m5b89413[m HEAD@{5}: commit: Issues Ticket not deducting after payment
+[33m29fead2[m HEAD@{6}: commit: Users functionality remaining
+[33m718caaa[m HEAD@{7}: commit: Added Vendor Dashboard Functionality
+[33m7aad542[m HEAD@{8}: commit: Vendor Dashboard Ticket Update/Delete not working
+[33m679a72f[m HEAD@{9}: commit: Added Vendor Dashboard Functionality
+[33m6c96e0b[m HEAD@{10}: commit: Added Admin Functionality
+[33mb5f9ab8[m HEAD@{11}: commit: Fixed Role Based Dashboard Issue
+[33mf47cce8[m HEAD@{12}: commit: Dashboard problem fixed
+[33mac03cea[m HEAD@{13}: commit: Basic functions working
+[33maef0994[m HEAD@{14}: commit: Reinitialised Project
+[33m940d12a[m HEAD@{15}: commit: Fixed tailwind config
+[33m9313600[m HEAD@{16}: commit: Fixed Stripe Key
+[33m35caad1[m HEAD@{17}: commit: Google login working, register not working
+[33m3277659[m HEAD@{18}: commit (initial): First Commmit

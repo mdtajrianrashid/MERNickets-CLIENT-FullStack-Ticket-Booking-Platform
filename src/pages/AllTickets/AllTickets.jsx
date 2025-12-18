@@ -2,21 +2,33 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axiosPublic from "../../utils/axiosPublic";
 import Spinner from "../../components/Spinner";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export default function AllTickets() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [searchParams] = useSearchParams();
+
   // filters
   const [queryFrom, setQueryFrom] = useState("");
   const [queryTo, setQueryTo] = useState("");
   const [transport, setTransport] = useState("");
+  const [departureDate, setDepartureDate] = useState("");
   const [sort, setSort] = useState("");
 
   // pagination
   const [page, setPage] = useState(1);
   const perPage = 6;
+
+  // 🔹 Read query params on load
+  useEffect(() => {
+    setQueryFrom(searchParams.get("from") || "");
+    setQueryTo(searchParams.get("to") || "");
+    setTransport(searchParams.get("transport") || "");
+    setDepartureDate(searchParams.get("date") || "");
+    setPage(1);
+  }, [searchParams]);
 
   useEffect(() => {
     setLoading(true);
@@ -44,11 +56,16 @@ export default function AllTickets() {
         t => t.transportType?.toLowerCase() === transport.toLowerCase()
       );
 
+    if (departureDate)
+      arr = arr.filter(t =>
+        new Date(t.departure).toISOString().slice(0, 10) === departureDate
+      );
+
     if (sort === "price_asc") arr.sort((a, b) => a.price - b.price);
     if (sort === "price_desc") arr.sort((a, b) => b.price - a.price);
 
     return arr;
-  }, [tickets, queryFrom, queryTo, transport, sort]);
+  }, [tickets, queryFrom, queryTo, transport, departureDate, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const paginated = filtered.slice((page - 1) * perPage, page * perPage);
@@ -60,7 +77,7 @@ export default function AllTickets() {
       <h1 className="text-2xl font-bold mb-4">All Tickets</h1>
 
       {/* Filters */}
-      <div className="grid md:grid-cols-3 gap-4 mb-6">
+      <div className="grid md:grid-cols-4 gap-4 mb-6">
         <input
           value={queryFrom}
           onChange={e => setQueryFrom(e.target.value)}
@@ -84,6 +101,12 @@ export default function AllTickets() {
           <option value="launch">Launch</option>
           <option value="plane">Plane</option>
         </select>
+        <input
+          type="date"
+          value={departureDate}
+          onChange={e => setDepartureDate(e.target.value)}
+          className="input input-bordered"
+        />
       </div>
 
       {/* Sort */}
@@ -103,7 +126,10 @@ export default function AllTickets() {
       {/* Tickets */}
       <div className="grid md:grid-cols-3 gap-6">
         {paginated.map(ticket => (
-          <div key={ticket._id} className="card shadow p-4">
+          <div
+            key={ticket._id}
+            className="card shadow p-4 bg-white dark:bg-gray-900"
+          >
             <img
               src={ticket.image || "/placeholder.jpg"}
               alt={ticket.title}
