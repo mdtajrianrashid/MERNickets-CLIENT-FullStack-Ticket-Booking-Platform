@@ -86,6 +86,82 @@ Use the following demo credentials to explore role‑based features:
 
 ---
 
+## 📁 Project Structure
+
+```bash
+MERNickets-SERVER-FullStack-Ticket-Booking-Platform/
+│
+├── public/
+│
+│
+├── src/
+│   ├── main.jsx                     # App entry point, renders <App/>
+│   ├── App.jsx                      # Main App component, loads Routes
+│   │
+│   ├── layouts/
+│   │   └── MainLayout.jsx           # Shared layout: Navbar + Outlet + Footer
+│   │
+│   ├── components/
+│   │   ├── Navbar.jsx               # Top navigation bar
+│   │   ├── Footer.jsx               # Footer component
+│   │   ├── Spinner.jsx              # Loading spinner
+│   │   └── PaymentForm.jsx          # Stripe CardElement + payment handler
+│   │
+│   ├── pages/
+│   │   ├── Home/
+│   │   │   └── Home.jsx             # Homepage: hero banner + advertised tickets
+│   │   ├── AllTickets/
+│   │   │   └── AllTickets.jsx       # Shows all admin-approved tickets
+│   │   ├── TicketDetails/
+│   │   │   └── TicketDetails.jsx    # Ticket info + booking modal + countdown
+│   │   ├── Dashboard/
+│   │   │   ├── AddTicket.jsx        # Add ticket functionality for Vendor
+│   │   │   ├── MyAddedTicket.jsx    # Vendor to review/update added tickets
+│   │   │   ├── RequestedBookings.jsx   # Vendor to accept/reject booking request
+│   │   │   ├── Transactions.jsx        # Transaction history for users
+│   │   │   ├── VendorRevenue.jsx       # Revenue calculation for vendor
+│   │   │   ├── UserDashboard.jsx    # User dashboard layout
+│   │   │   ├── UserProfile.jsx      # User Profile
+│   │   │   ├── VendorDashboard.jsx  # Vendor overview
+│   │   │   ├── AdminDashboard.jsx   # Admin overview
+│   │   │   ├── MyBookings.jsx       # User bookings list (paid + pending)
+│   │   │   └── PaymentPage.jsx      # Loads Stripe Elements and PaymentForm
+│   │   │
+│   │   ├── Auth/
+│   │   │   ├── Login.jsx            # Login form + Firebase sign-in
+│   │   │   └── Register.jsx         # Registration + Firebase createUser
+│   │   │
+│   │   └── NotFound.jsx             # 404 page
+│   │
+│   ├── hooks/
+│   │   ├── useAuth.js               # Returns auth user from context
+│   │   └── useAxiosSecure.js        # Secure axios with JWT for payments│
+│   ├── utils/
+│   │   ├── axiosPublic.js           # Axios for public API calls
+│   │   └── axiosSecure.js           # Axios with token for protected APIs
+│   │
+│   ├── router/
+│   │   └── Routes.jsx               # All app routes + protected routes
+│   │
+│   ├── context/
+│   │   └── AuthProvider.jsx         # Firebase auth context provider
+│   │   └── ThemeContext.jsx         # Theme provider
+│   │
+│   ├── firebase/
+│   │   └── firebase.config.js       # Firebase setup (auth initialization)
+│   │
+│   ├── payment/
+│   │   └── stripe.js                # Loads Stripe public key (loadStripe)
+│   │
+│
+├── .env                             # Firebase keys + Stripe PK
+└── .gitignore                       # Ignore node_modules, .env, build files
+└── tailwind.config.js
+└──favicon.svg
+```
+
+---
+
 ## 🛠️ Technology Stack
 
 ### Frontend
