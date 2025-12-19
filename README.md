@@ -1,4 +1,4 @@
-# 🎟️ MERNickets (Client) — Modern Online Ticket Booking Platform
+# 🎟️ MERNickets (CLIENT) — A Modern Online Ticket Booking Platform
 
 MERNickets is a **modern, full‑stack online ticket booking platform** built using the **MERN stack**. This repository contains the **client‑side (frontend)** of the application, delivering a fast, responsive, and visually rich user experience.
 
