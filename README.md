@@ -1,94 +1,120 @@
-# 🎟️ MERNickets - Modern Full Stack Online Ticket Booking Platform
+# 🎟️ MERNickets (Client) — Modern Online Ticket Booking Platform
 
-**MERNickets** is a premium, full-stack online ticket booking platform built with the MERN stack (MongoDB, Express, React, Node.js). It serves as a comprehensive travel hub where users can discover and book tickets for buses, trains, launches, and flights.
+MERNickets is a **modern, full‑stack online ticket booking platform** built using the **MERN stack**. This repository contains the **client‑side (frontend)** of the application, delivering a fast, responsive, and visually rich user experience.
 
-The platform features a sleek, glassmorphic UI with **Dark/Light mode**, advanced role-based dashboards (User, Vendor, Admin), real-time booking status updates, and secure payments via Stripe.
+Users can seamlessly browse, search, and book tickets for **Bus, Train, Launch, and Flight** routes with secure authentication and payments. The UI is crafted with a premium **glassmorphic design**, smooth animations, and **Dark / Light mode** support.
 
 ---
 
-## 🌐 Live Demo
+## 🌐 Live Application
 
-### 🔗 Client  
-**[https://mernickets.netlify.app/]**
+### 🔗 Client (Frontend)
 
-### 🔗 Server  
-**[https://mernickets-server.vercel.app/]**
+👉 [https://mernickets.netlify.app/](https://mernickets.netlify.app/)
+
+### 🔗 Server (Backend API)
+
+👉 [https://mernickets-server.vercel.app/](https://mernickets-server.vercel.app/)
 
 ---
 
 ## 🔑 Test Credentials
 
-Use these credentials to explore the different role-based features:
+Use the following demo credentials to explore role‑based features:
 
-### 👮‍♂️ Admin Access
-> **Email:** `[admin@mernickets.com]`  
-> **Password:** `[Ab1234567890]`
+### 👮‍♂️ Admin Account
 
-### 🏪 Vendor Access
-> **Email:** `[vendor@mernickets.com]`  
-> **Password:** `[Ab1234567890]`
+* **Email:** [admin@mernickets.com](mailto:admin@mernickets.com)
+* **Password:** Ab1234567890
 
-### 👤 User Access
-> **Email:** `[Login with Any Email/Gmail]`  
+### 🏪 Vendor Account
 
----
+* **Email:** [vendor@mernickets.com](mailto:vendor@mernickets.com)
+* **Password:** Ab1234567890
 
-## ✨ Key Features
+### 👤 User Account
 
-### 🌍 General Features
-**Modern UI/UX:** Built with **Tailwind CSS v4** and **Framer Motion** for smooth page transitions and glassmorphism effects.
-**Responsive Design:** Fully optimized layout for mobile, tablet, and desktop screens.
-**Theme Toggle:** Integrated Dark/Light mode toggle for better user experience.
-**Secure Authentication:** Firebase Email/Password login and Google Social Login.
-
-### 👤 User Features (Traveler)
-**Advanced Search & Filter:** Search tickets by Location (From/To) and filter by Transport Type (Bus, Train, Launch, Flight).
-**Smart Sorting:** Sort tickets by Price (Low to High / High to Low).
-* **Booking System:** Book tickets with a real-time quantity selector.
-**Secure Payments:** Integrated **Stripe** payment gateway for secure transactions.
-* **User Dashboard:**
-    **My Bookings:** View booking status (Pending, Accepted, Rejected) with a countdown timer for upcoming trips.
-    **Transaction History:** View detailed payment logs with transaction IDs.
-
-### 🏪 Vendor Features (Service Provider)
-**Ticket Management:** Add, Update, and Delete ticket listings with image uploads.
-**Booking Requests:** Accept or Reject incoming booking requests from users.
-**Revenue Analytics:** Interactive charts (Bar & Pie) displaying "Total Revenue", "Tickets Sold", and "Tickets Added" using **Recharts**.
-**Inventory Control:** Track ticket verification status (Pending, Approved, Rejected).
-
-### 🛡️ Admin Features (Platform Manager)
-**Ticket Moderation:** Approve or Reject tickets added by vendors before they go live.
-**User Management:** Manage user roles (Promote to Vendor/Admin) and mark fraudulent vendors.
-**Advertisement Control:** Toggle "Featured" status for tickets to display them on the Home page banner (Max 6).
-**System Overview:** centralized control over the entire platform's content.
+* Login using **any valid email/password** or **Google Login**
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ Core Features
 
-### **Frontend**
+### 🌍 General
+
+* 🎨 **Modern UI/UX** — Tailwind CSS v4 + Framer Motion
+* 🌗 **Dark / Light Mode** with global theme context
+* 📱 **Fully Responsive** — Mobile, Tablet & Desktop
+* 🔐 **Secure Authentication** — Firebase Email/Password & Google OAuth
+
+---
+
+### 👤 User (Traveler)
+
+* 🔎 **Advanced Search & Filters** (From / To / Transport Type)
+* ↕️ **Smart Sorting** by ticket price
+* 🎟️ **Ticket Booking System** with quantity selection
+* 💳 **Stripe Payments** for secure checkout
+* 📊 **User Dashboard**
+
+  * My Bookings (Pending / Accepted / Rejected)
+  * Countdown timer for departure
+  * Transaction history with payment IDs
+
+---
+
+### 🏪 Vendor (Service Provider)
+
+* ➕ **Add / Update / Delete Tickets**
+* 📩 **Manage Booking Requests** (Accept / Reject)
+* 📈 **Revenue Analytics Dashboard**
+
+  * Total Revenue
+  * Tickets Sold
+  * Tickets Added
+* 📦 **Inventory & Status Tracking** (Pending / Approved / Rejected)
+
+---
+
+### 🛡️ Admin (Platform Manager)
+
+* ✅ **Ticket Moderation** — Approve / Reject vendor tickets
+* 👥 **User Management** — Assign roles (User / Vendor / Admin)
+* 🚫 **Fraud Control** — Mark vendors as fraudulent
+* ⭐ **Advertisement Control** — Feature up to 6 tickets on Home page
+* 🧭 **Full Platform Oversight**
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+
 * **React 19** (Vite)
-* **Tailwind CSS v4** (Styling)
+* **Tailwind CSS v4**
 * **Framer Motion** (Animations)
-* **Recharts** (Data Visualization)
+* **Recharts** (Charts & Analytics)
 * **Stripe.js** (Payments)
+* **React Router v7**
 
-### **Backend**
-* **Node.js** (Runtime)
-* **Express.js** (Framework)
-* **MongoDB** (Database)
-* **JWT** (Secure API Protection)
+### Backend (Connected API)
 
-### **Tools**
-* **Firebase** (Authentication)
-* **ImgBB** (Image Hosting)
+* Node.js + Express.js
+* MongoDB (Mongoose)
+* JWT Authentication
+
+### Additional Tools
+
+* **Firebase** — Authentication
+* **ImgBB** — Image hosting
+* **Netlify** — Client deployment
 
 ---
 
 ## 📦 Dependencies
 
 ```json
-"dependencies": {
+{
     "@heroicons/react": "^2.2.0",
     "@stripe/react-stripe-js": "^5.4.1",
     "@stripe/stripe-js": "^8.5.3",
@@ -103,26 +129,62 @@ Use these credentials to explore the different role-based features:
     "react-router-dom": "^7.10.1",
     "recharts": "^3.6.0"
 }
+```
 
-## 🏃 Running Locally
+---
 
-Follow these steps to get a local copy up and running.
+## 🏃‍♂️ Run Client Locally
 
-### 1. Clone the repository
+### 1️⃣ Clone Repository
 
-git clone [https://github.com/mdtajrianrashid/MERNickets-CLIENT-FullStack-Ticket-Booking-Platform.git]
-cd [MERNickets-CLIENT-FullStack-Ticket-Booking-Platform]
-npm install 
+```bash
+git clone https://github.com/mdtajrianrashid/MERNickets-CLIENT-FullStack-Ticket-Booking-Platform.git
+cd MERNickets-CLIENT-FullStack-Ticket-Booking-Platform
+npm install
+```
 
-Create a .env.local file in the root directory and add your keys:
+### 2️⃣ Environment Variables
 
+Create a `.env.local` file in the root directory:
+
+```env
 VITE_apiKey=YOUR_FIREBASE_API_KEY
 VITE_authDomain=YOUR_FIREBASE_AUTH_DOMAIN
 VITE_projectId=YOUR_FIREBASE_PROJECT_ID
 VITE_storageBucket=YOUR_FIREBASE_STORAGE_BUCKET
 VITE_messagingSenderId=YOUR_FIREBASE_SENDER_ID
 VITE_appId=YOUR_FIREBASE_APP_ID
-VITE_stripe_publishable_key=YOUR_STRIPE_PK
-VITE_API_URL=http://localhost:5000
+VITE_stripe_publishable_key=YOUR_STRIPE_PUBLIC_KEY
+VITE_API_URL=Server_API_URL
+```
 
+### 3️⃣ Start Development Server
+
+```bash
 npm run dev
+```
+
+The app will run at:
+👉 [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🚀 Deployment
+
+* **Client:** Deployed on **Netlify**
+* **Server:** Deployed on **Vercel**
+* Environment variables securely configured on hosting platforms
+
+---
+
+## 👨‍💻 Author
+
+**MD Tajrian Rashid**
+Frontend & Full‑Stack Developer
+
+* GitHub: [https://github.com/mdtajrianrashid](https://github.com/mdtajrianrashid)
+* LinkedIn: [https://www.linkedin.com/in/mdtajrianrashid/](https://www.linkedin.com/in/mdtajrianrashid/)
+
+---
+
+⭐ If you like this project, don’t forget to give it a star!
