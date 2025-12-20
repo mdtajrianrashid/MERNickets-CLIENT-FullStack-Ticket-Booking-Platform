@@ -3,7 +3,7 @@ import axios from "axios";
 import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://mernickets-server.vercel.app/api",
 });
 
 export default function useAxiosSecure() {

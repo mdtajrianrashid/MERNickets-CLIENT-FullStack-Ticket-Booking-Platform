@@ -195,14 +195,21 @@ function NavLink({ to, children }) {
   );
 }
 
-
 function MobileLink({ to, children }) {
   return (
-    <Link
+    <RouterNavLink
       to={to}
-      className="block text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 px-4 py-3 rounded-xl transition-all"
+      end={to === "/"}
+      className={({ isActive }) =>
+        `block text-lg font-medium px-4 py-3 rounded-xl transition-all
+        ${
+          isActive
+            ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+            : "text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+        }`
+      }
     >
       {children}
-    </Link>
+    </RouterNavLink>
   );
 }
