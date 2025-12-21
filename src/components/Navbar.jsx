@@ -29,20 +29,17 @@ export default function Navbar() {
   const avatarRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
-  /* Scroll shadow */
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* Close menus on route change */
   useEffect(() => {
     setOpen(false);
     setAvatarOpen(false);
   }, [location.pathname]);
 
-  /* Outside click close (avatar dropdown) */
   useEffect(() => {
     const handler = (e) => {
       if (avatarRef.current && !avatarRef.current.contains(e.target)) {
@@ -53,7 +50,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  /* Outside click close (mobile menu) */
 useEffect(() => {
   const handler = (e) => {
     if (
@@ -78,7 +74,6 @@ useEffect(() => {
   return () => window.removeEventListener("scroll", closeOnScroll);
 }, [open]);
 
-/* Close avatar dropdown on scroll */
 useEffect(() => {
   const closeAvatarOnScroll = () => {
     if (avatarOpen) {
@@ -97,7 +92,6 @@ useEffect(() => {
     navigate("/");
   };
 
-  /* Role-based dashboard landing */
   const getDashboardLink = () => {
     if (!dbUser?.role) return "/dashboard";
     if (dbUser.role === "user") return "/dashboard/user/profile";
@@ -106,7 +100,6 @@ useEffect(() => {
     return "/dashboard";
   };
 
-  /* ✅ Dashboard active for ALL nested routes */
   const isDashboardActive = location.pathname.startsWith("/dashboard");
 
   return (
@@ -119,7 +112,6 @@ useEffect(() => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="bg-linear-to-tr from-blue-600 to-cyan-400 p-2 rounded-xl text-white shadow-lg">
               <TicketIcon className="w-6 h-6" />
@@ -129,7 +121,6 @@ useEffect(() => {
             </span>
           </Link>
 
-          {/* Desktop links */}
           <div className="hidden md:flex items-center space-x-8">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/tickets">All Tickets</NavLink>
@@ -148,9 +139,7 @@ useEffect(() => {
             )}
           </div>
 
-          {/* Right actions */}
           <div className="flex items-center gap-3">
-            {/* Theme toggle desktop */}
             <button
               onClick={toggleTheme}
               className="hidden md:flex p-2 rounded-full bg-gray-100 dark:bg-gray-800"
@@ -162,7 +151,6 @@ useEffect(() => {
               )}
             </button>
 
-            {/* Login / Register */}
             {!user && (
               <div className="hidden md:flex items-center gap-3">
                 <Link
@@ -183,7 +171,6 @@ useEffect(() => {
               </div>
             )}
 
-            {/* Avatar */}
             {user && (
               <div className="relative" ref={avatarRef}>
                 <button onClick={() => setAvatarOpen(!avatarOpen)}>
@@ -246,7 +233,6 @@ useEffect(() => {
               </div>
             )}
 
-            {/* Mobile hamburger */}
             <button
               onClick={() => setOpen(!open)}
               className="md:hidden p-2 rounded-lg"
@@ -257,7 +243,6 @@ useEffect(() => {
         </div>
       </div>
 
-{/* Mobile menu */}
 <AnimatePresence>
   {open && (
     <motion.div
@@ -313,8 +298,6 @@ useEffect(() => {
   )}
 </AnimatePresence>
 
-
-      {/* Mobile menu (unchanged) */}
     </nav>
   );
 }
@@ -353,8 +336,6 @@ function MobileLink({ to, children, forceActive = false }) {
   );
 }
 
-
-/* ✅ FIXED avatar active logic */
 function DropLink({ to, children }) {
   return (
     <RouterNavLink
