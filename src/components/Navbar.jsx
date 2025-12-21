@@ -116,7 +116,7 @@ useEffect(() => {
             <div className="bg-linear-to-tr from-blue-600 to-cyan-400 p-2 rounded-xl text-white shadow-lg">
               <TicketIcon className="w-6 h-6" />
             </div>
-            <span className="font-extrabold text-2xl text-gray-900 dark:text-white">
+            <span className="nav-font font-extrabold text-2xl text-gray-900 dark:text-white">
               MERNickets
             </span>
           </Link>
