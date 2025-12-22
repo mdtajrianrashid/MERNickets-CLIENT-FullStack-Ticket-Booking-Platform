@@ -133,7 +133,7 @@ export default function TicketDetails() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800">
+          <div className="bg-white dark:bg-gray-900 py-6 px-2 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800">
             <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
               <ClockIcon className="w-5 h-5" /> Time Until Departure
             </h3>
