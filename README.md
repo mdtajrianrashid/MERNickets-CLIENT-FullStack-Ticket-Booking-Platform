@@ -255,11 +255,11 @@ The app will run at:
 
 ## 👨‍💻 Author
 
-**Takian Rashid**
-Frontend & Full‑Stack Developer
+**Takian Rashid**  
+Frontend & Full-Stack Developer | Aspiring Software Engineer
 
-* GitHub: [https://github.com/mdtakianrashid](https://github.com/mdtakianrashid)
-* LinkedIn: [https://www.linkedin.com/in/mdtakianrashid/](https://www.linkedin.com/in/mdtakianrashid/)
+- **GitHub:** https://github.com/mdtakianrashid  
+- **LinkedIn:** https://www.linkedin.com/in/mdtakianrashid/
 
 ---
 
